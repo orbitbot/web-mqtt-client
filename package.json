@@ -1,0 +1,31 @@
+{
+  "name": "web-mqtt-client",
+  "version": "0.0.1",
+  "description": "A better MQTT API for the browser",
+  "private": true,
+  "main": "mqtt-client.js",
+  "scripts": {
+    "test": "electron-mocha --renderer --reporter spec mqtt-client.js ./test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/orbitbot/web-mqtt-client.git"
+  },
+  "keywords": [
+    "mqtt",
+    "mqtt-client",
+    "paho"
+  ],
+  "author": "Patrik Johnson <patrik@zebros.fi>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/orbitbot/web-mqtt-client/issues"
+  },
+  "homepage": "https://github.com/orbitbot/web-mqtt-client#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "electron-mocha": "^0.8.0",
+    "sinon": "^1.17.3",
+    "uglify-js": "^2.6.1"
+  }
+}

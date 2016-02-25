@@ -1,0 +1,28 @@
+h6 {
+  display: inline-block;
+}
+
+table {
+  display: table;
+}
+
+.subscription-list tr td:first-child {
+  width: 100%;
+}
+
+.subscription-list .button {
+  margin-bottom: 0;
+}
+
+.connect-form h5 {
+  display: inline-block;
+}
+
+.connect-form button {
+  margin-top: 0.8rem;
+}
+
+.publish-form button,
+.subscribe-form button {
+  margin-top: 2.1rem;
+}
