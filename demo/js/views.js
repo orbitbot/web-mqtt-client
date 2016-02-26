@@ -34,7 +34,6 @@ var ConnectForm = {
       localStorage.removeItem('connect:input');
       location.reload();
     };
-    window.connectFormCtrl = this;
   },
   view : function(ctrl, api) {
     return (
@@ -167,31 +166,31 @@ var ConnectedWidget = {
 };
 
 var SubscriptionForm = {
-  controller : function(args) {
-    console.log('subscriptionForm args', args);
+  controller : function(app) {
     this.props = {
-      topic   : m.prop(''),
-      qos     : m.prop(0),
-      retain  : m.prop(false),
-      message : m.prop('')
+      topic : '',
+      qos   : 0
     };
-    this.debug = function () { console.log(args) };
+    this.subscribe = function(obj) {
+      if (obj.topic)
+        app.api.subscribe(obj);
+    };
   },
-  view : function(ctrl, args) {
+  view : function(ctrl, app) {
     return (
       {tag: "form", attrs: {class:"subscribe-form"}, children: [
         {tag: "div", attrs: {class:"row"}, children: [
           {tag: "div", attrs: {class:"eight columns"}, children: [
             {tag: "label", attrs: {for:"topicInput"}, children: ["Topic"]}, 
             {tag: "input", attrs: {class:"u-full-width", type:"text", id:"hostInput", 
-              value: ctrl.props.topic(), 
-              onchange: m.withAttr('value', ctrl.props.topic) }}
+              value: ctrl.props.topic, 
+              onchange: m.setValue(ctrl.props, 'topic') }}
           ]}, 
 
           {tag: "div", attrs: {class:"two columns"}, children: [
             {tag: "label", attrs: {for:"qosInput"}, children: ["QoS"]}, 
             {tag: "select", attrs: {class:"u-full-width", id:"qosInput", 
-              onchange: m.withAttr('value', ctrl.props.qos) }, children: [
+              onchange: m.setValue(ctrl.props, 'qos') }, children: [
                 [0, 1, 2].map(function(el) {
                   return ({tag: "option", attrs: {value: Number(el) }, children: [ el ]});
                 })
@@ -199,7 +198,7 @@ var SubscriptionForm = {
           ]}, 
 
           {tag: "div", attrs: {class:"two columns"}, children: [
-            {tag: "button", attrs: {class:"button-primary u-pull-right", type:"button", onclick: ctrl.debug.bind(this, ctrl.props) }, children: ["Subscribe"]}
+            {tag: "button", attrs: {class:"button-primary u-pull-right", type:"button", onclick: ctrl.subscribe.bind(this, ctrl.props) }, children: ["Subscribe"]}
           ]}
         ]}
       ]}
@@ -243,29 +242,29 @@ var SubscriptionList = {
 };
 
 var PublishForm = {
-  controller : function(args) {
-    this.props = {
-      topic   : m.prop(''),
-      qos     : m.prop(0),
-      retain  : m.prop(false),
-      message : m.prop('')
+  controller : function(app) {
+    this.msg = {
+      topic   : '',
+      qos     : 0,
+      retain  : false,
+      message : ''
     };
   },
-  view : function(ctrl, args) {
+  view : function(ctrl, app) {
     return (
       {tag: "form", attrs: {class:"publish-form"}, children: [
         {tag: "div", attrs: {class:"row"}, children: [
           {tag: "div", attrs: {class:"seven columns"}, children: [
             {tag: "label", attrs: {for:"pwdInput"}, children: ["Topic"]}, 
             {tag: "input", attrs: {class:"u-full-width", type:"text", id:"pwdInput", 
-              value: ctrl.props.topic(), 
-              onchange: m.withAttr('value', ctrl.props.topic) }}
+              value: ctrl.msg.topic, 
+              onchange: m.setValue(ctrl.msg, 'topic') }}
           ]}, 
 
           {tag: "div", attrs: {class:"two columns"}, children: [
             {tag: "label", attrs: {for:"qosInput"}, children: ["QoS"]}, 
             {tag: "select", attrs: {class:"u-full-width", id:"qosInput", 
-              onchange: m.withAttr('value', ctrl.props.qos) }, children: [
+              onchange: m.setValue(ctrl.msg, 'qos') }, children: [
                 [0, 1, 2].map(function(el) {
                   return ({tag: "option", attrs: {value: Number(el) }, children: [ el ]});
                 })
@@ -275,19 +274,19 @@ var PublishForm = {
           {tag: "div", attrs: {class:"one column"}, children: [
             {tag: "label", attrs: {for:"lwtRetainInput"}, children: ["Retain"]}, 
             {tag: "input", attrs: {type:"checkbox", id:"lwtRetainInput", 
-              checked: ctrl.props.retain(), 
-              onclick: m.withAttr('checked', ctrl.props.retain) }}
+              checked: ctrl.msg.retain, 
+              onclick: m.setAttr(ctrl.msg, 'retain', 'checked') }}
           ]}, 
 
           {tag: "div", attrs: {class:"two columns"}, children: [
-            {tag: "button", attrs: {class:"button-primary u-pull-right", type:"button"}, children: ["Publish"]}
+            {tag: "button", attrs: {class:"button-primary u-pull-right", type:"button", onclick: app.api.publish.bind(this, ctrl.msg) }, children: ["Publish"]}
           ]}
         ]}, 
 
-        {tag: "label", attrs: {for:"lwtMessage"}, children: ["Message"]}, 
-        {tag: "textarea", attrs: {class:"u-full-width", id:"lwtMessage", 
-          value: ctrl.props.message(), 
-          onchange: m.withAttr('value', ctrl.props.message) }
+        {tag: "label", attrs: {for:"message"}, children: ["Message"]}, 
+        {tag: "textarea", attrs: {class:"u-full-width", id:"message", 
+          value: ctrl.msg.message, 
+          onchange: m.setValue(ctrl.msg, 'message') }
         }
       ]}
     );

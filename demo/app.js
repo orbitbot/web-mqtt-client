@@ -4,7 +4,6 @@ var App = {
 };
 
 App.connect = function(args) {
-  console.log(args)
   App.client = new MqttClient(args);
 
   App.client
