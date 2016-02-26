@@ -31,8 +31,13 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     },
     trigger : function(event) {
       if (event in self.emitter.events) {
-        for (var i = 0; i < self.emitter.events[event].length; ++i)
-          self.emitter.events[event][i].apply(self, Array.prototype.slice.call(arguments, 1));
+        for (var i = 0; i < self.emitter.events[event].length; ++i) {
+          try {
+            self.emitter.events[event][i].apply(self, Array.prototype.slice.call(arguments, 1));
+          } catch (e) {
+            setTimeout(function() { throw e; }); // ensure error is rethrown normally
+          }
+        }
       }
     },
   };
@@ -63,18 +68,16 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
   };
 
   self.publish = function() {
-    console.log('publish');
+    console.log('publish', arguments);
   };
 
   self.subscribe = function() {
-    console.log('subscribe');
+    console.log('subscribe', arguments);
   };
 
   self.unsubscribe = function() {
-    console.log('unsubscribe');
+    console.log('unsubscribe', arguments);
   };
-
-  // todo messages API emitter w/regex support
 
   return self;
 }
