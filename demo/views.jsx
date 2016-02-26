@@ -34,7 +34,6 @@ var ConnectForm = {
       localStorage.removeItem('connect:input');
       location.reload();
     };
-    window.connectFormCtrl = this;
   },
   view : function(ctrl, api) {
     return (
@@ -167,31 +166,31 @@ var ConnectedWidget = {
 };
 
 var SubscriptionForm = {
-  controller : function(args) {
-    console.log('subscriptionForm args', args);
+  controller : function(app) {
     this.props = {
-      topic   : m.prop(''),
-      qos     : m.prop(0),
-      retain  : m.prop(false),
-      message : m.prop('')
+      topic : '',
+      qos   : 0
     };
-    this.debug = function () { console.log(args) };
+    this.subscribe = function(obj) {
+      if (obj.topic)
+        app.api.subscribe(obj);
+    };
   },
-  view : function(ctrl, args) {
+  view : function(ctrl, app) {
     return (
       <form class="subscribe-form">
         <div class="row">
           <div class="eight columns">
             <label for="topicInput">Topic</label>
             <input class="u-full-width" type="text" id="hostInput"
-              value={ ctrl.props.topic() }
-              onchange={ m.withAttr('value', ctrl.props.topic) } />
+              value={ ctrl.props.topic }
+              onchange={ m.setValue(ctrl.props, 'topic') } />
           </div>
 
           <div class="two columns">
             <label for="qosInput">QoS</label>
             <select class="u-full-width" id="qosInput"
-              onchange={ m.withAttr('value', ctrl.props.qos) }>
+              onchange={ m.setValue(ctrl.props, 'qos') }>
                 {[0, 1, 2].map(function(el) {
                   return (<option value={ Number(el) }>{ el }</option>);
                 })}
@@ -199,7 +198,7 @@ var SubscriptionForm = {
           </div>
 
           <div class="two columns">
-            <button class="button-primary u-pull-right" type="button" onclick={ ctrl.debug.bind(this, ctrl.props) }>Subscribe</button>
+            <button class="button-primary u-pull-right" type="button" onclick={ ctrl.subscribe.bind(this, ctrl.props) }>Subscribe</button>
           </div>
         </div>                    
       </form>
@@ -243,29 +242,29 @@ var SubscriptionList = {
 };
 
 var PublishForm = {
-  controller : function(args) {
-    this.props = {
-      topic   : m.prop(''),
-      qos     : m.prop(0),
-      retain  : m.prop(false),
-      message : m.prop('')
+  controller : function(app) {
+    this.msg = {
+      topic   : '',
+      qos     : 0,
+      retain  : false,
+      message : ''
     };
   },
-  view : function(ctrl, args) {
+  view : function(ctrl, app) {
     return (
       <form class="publish-form">
         <div class="row">
           <div class="seven columns">
             <label for="pwdInput">Topic</label>
             <input class="u-full-width" type="text" id="pwdInput"
-              value={ ctrl.props.topic() }
-              onchange={ m.withAttr('value', ctrl.props.topic) } />
+              value={ ctrl.msg.topic }
+              onchange={ m.setValue(ctrl.msg, 'topic') } />
           </div>
 
           <div class="two columns">
             <label for="qosInput">QoS</label>
             <select class="u-full-width" id="qosInput"
-              onchange={ m.withAttr('value', ctrl.props.qos) }>
+              onchange={ m.setValue(ctrl.msg, 'qos') }>
                 {[0, 1, 2].map(function(el) {
                   return (<option value={ Number(el) }>{ el }</option>);
                 })}
@@ -275,19 +274,19 @@ var PublishForm = {
           <div class="one column">
             <label for="lwtRetainInput">Retain</label>
             <input type="checkbox" id="lwtRetainInput"
-              checked={ ctrl.props.retain() }
-              onclick={ m.withAttr('checked', ctrl.props.retain) } />
+              checked={ ctrl.msg.retain }
+              onclick={ m.setAttr(ctrl.msg, 'retain', 'checked') } />
           </div>
 
           <div class="two columns">
-            <button class="button-primary u-pull-right" type="button">Publish</button>
+            <button class="button-primary u-pull-right" type="button" onclick={ app.api.publish.bind(this, ctrl.msg) }>Publish</button>
           </div>
         </div>
 
-        <label for="lwtMessage">Message</label>
-        <textarea class="u-full-width" id="lwtMessage"
-          value={ ctrl.props.message() }
-          onchange={ m.withAttr('value', ctrl.props.message) }>
+        <label for="message">Message</label>
+        <textarea class="u-full-width" id="message"
+          value={ ctrl.msg.message }
+          onchange={ m.setValue(ctrl.msg, 'message') }>
         </textarea>
       </form>
     );
