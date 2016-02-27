@@ -9,7 +9,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     useSSL            : args.ssl               || false,
     cleanSession      : args.clean             || true,
     keepAliveInterval : Number(args.keepalive) || 30,
-    clientId          : args.clientId          || 'random-clientid',
+    clientId          : args.clientId          || 'client-' + Math.random().toString(36).slice(-6),
     mqttVersion       : args.mqttVersion       || undefined, 
     userName          : args.username          || undefined,
     password          : args.password          || undefined,
@@ -35,7 +35,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
           try {
             self.emitter.events[event][i].apply(self, Array.prototype.slice.call(arguments, 1));
           } catch (e) {
-            setTimeout(function() { throw e; }); // ensure error is rethrown normally
+            setTimeout(function() { throw e; }); // ensure error is rethrown successfully
           }
         }
       }
