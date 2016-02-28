@@ -37,7 +37,7 @@ var ConnectForm = {
   },
   view : function(ctrl, api) {
     return (
-      {tag: "form", attrs: {class:"connect-form"}, children: [
+      {tag: "form", attrs: {class:"connect-form", onSubmit:"event.preventDefault()"}, children: [
         {tag: "div", attrs: {}, children: [
           {tag: "h5", attrs: {}, children: ["Connect to broker"]}, 
           {tag: "button", attrs: {class:"button-primary u-pull-right", type:"button", onclick: api.connect.bind(this, ctrl.props) }, children: ["Connect"]}
@@ -143,12 +143,18 @@ var ConnectForm = {
 
 
 var ConnectedWidget = {
+  controller : function(app) {
+    if (!app.client)
+      m.route('/')
+  },
   view : function(_, app) {
     return (
       {tag: "div", attrs: {}, children: [
         {tag: "div", attrs: {}, children: [
           {tag: "h6", attrs: {}, children: [ '... ' + app.clientId + '@' + app.host]}, 
-          {tag: "button", attrs: {class:"button-primary u-pull-right", type:"button", onclick: app.disconnect}, children: ["Disconnect"]}
+          {tag: "button", attrs: {class:"button-primary u-pull-right", type:"button", onclick: app.disconnect}, children: [
+            "Disconnect"
+          ]}
         ]}, 
 
         {tag: "h5", attrs: {}, children: ["Subscriptions"]}, 
@@ -171,14 +177,15 @@ var SubscriptionForm = {
       topic : '',
       qos   : 0
     };
-    this.subscribe = function(obj) {
+    this.subscribe = function(obj, event) {
+      event.preventDefault();
       if (obj.topic)
         app.api.subscribe(obj);
     };
   },
-  view : function(ctrl, app) {
+  view : function(ctrl) {
     return (
-      {tag: "form", attrs: {class:"subscribe-form"}, children: [
+      {tag: "form", attrs: {class:"subscribe-form", onSubmit:"event.preventDefault();"}, children: [
         {tag: "div", attrs: {class:"row"}, children: [
           {tag: "div", attrs: {class:"eight columns"}, children: [
             {tag: "label", attrs: {for:"topicInput"}, children: ["Topic"]}, 
@@ -198,7 +205,10 @@ var SubscriptionForm = {
           ]}, 
 
           {tag: "div", attrs: {class:"two columns"}, children: [
-            {tag: "button", attrs: {class:"button-primary u-pull-right", type:"button", onclick: ctrl.subscribe.bind(this, ctrl.props) }, children: ["Subscribe"]}
+            {tag: "button", attrs: {class:"button-primary u-pull-right", type:"button", 
+              onclick: ctrl.subscribe.bind(this, ctrl.props) }, children: [
+              "Subscribe"
+            ]}
           ]}
         ]}
       ]}
@@ -207,19 +217,10 @@ var SubscriptionForm = {
 };
 
 var SubscriptionList = {
-  controller : function(app) {
-    this.subscriptions = [
-      { topic: 'some/topic', qos: 1 },
-      { topic: 'another/topic', qos: 0 },
-      { topic: 'third/topic', qos: 2 },
-    ];
-    this.unsubscribe = function() {
-      console.log('unsubscribe ', arguments);
-    }
-  },
-  view : function(ctrl, args) {
+  view : function(ctrl, app) {
+    app = app.data;
     return (
-      {tag: "table", attrs: {class:"u-full-width subscription-list"}, children: [
+      {tag: "table", attrs: {class: app.subscriptions.length ? 'u-full-width subscription-list' : 'u-full-width subscription-list u-hide'}, children: [
         {tag: "thead", attrs: {}, children: [
           {tag: "tr", attrs: {}, children: [
             {tag: "th", attrs: {}, children: ["Topic"]}, 
@@ -228,11 +229,16 @@ var SubscriptionList = {
           ]}
         ]}, 
         {tag: "tbody", attrs: {}, children: [
-          ctrl.subscriptions.map(function(el) {          
+          app.subscriptions.map(function(el) {          
             return ({tag: "tr", attrs: {}, children: [
                       {tag: "td", attrs: {}, children: [ el.topic]}, 
                       {tag: "td", attrs: {}, children: [ el.qos]}, 
-                      {tag: "td", attrs: {}, children: [{tag: "button", attrs: {class:"button", type:"button", onclick: ctrl.unsubscribe.bind(this, el) }, children: ["Unsubscribe"]}]}
+                      {tag: "td", attrs: {}, children: [
+                        {tag: "button", attrs: {class:"button", type:"button", 
+                          onclick: app.unsubscribe.bind(this, el.topic) }, children: [
+                          "Unsubscribe"
+                        ]}
+                      ]}
                     ]})
           })
         ]}

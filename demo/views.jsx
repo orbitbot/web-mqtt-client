@@ -37,7 +37,7 @@ var ConnectForm = {
   },
   view : function(ctrl, api) {
     return (
-      <form class="connect-form">
+      <form class="connect-form" onSubmit="event.preventDefault()">
         <div>
           <h5>Connect to broker</h5>
           <button class="button-primary u-pull-right" type="button" onclick={ api.connect.bind(this, ctrl.props) }>Connect</button>
@@ -143,12 +143,18 @@ var ConnectForm = {
 
 
 var ConnectedWidget = {
+  controller : function(app) {
+    if (!app.client)
+      m.route('/')
+  },
   view : function(_, app) {
     return (
       <div>
         <div>
           <h6>{ '... ' + app.clientId + '@' + app.host}</h6>
-          <button class="button-primary u-pull-right" type="button" onclick={ app.disconnect }>Disconnect</button>
+          <button class="button-primary u-pull-right" type="button" onclick={ app.disconnect }>
+            Disconnect
+          </button>
         </div>
 
         <h5>Subscriptions</h5>
@@ -171,14 +177,15 @@ var SubscriptionForm = {
       topic : '',
       qos   : 0
     };
-    this.subscribe = function(obj) {
+    this.subscribe = function(obj, event) {
+      event.preventDefault();
       if (obj.topic)
         app.api.subscribe(obj);
     };
   },
-  view : function(ctrl, app) {
+  view : function(ctrl) {
     return (
-      <form class="subscribe-form">
+      <form class="subscribe-form" onSubmit="event.preventDefault();">
         <div class="row">
           <div class="eight columns">
             <label for="topicInput">Topic</label>
@@ -198,7 +205,10 @@ var SubscriptionForm = {
           </div>
 
           <div class="two columns">
-            <button class="button-primary u-pull-right" type="button" onclick={ ctrl.subscribe.bind(this, ctrl.props) }>Subscribe</button>
+            <button class="button-primary u-pull-right" type="button"
+              onclick={ ctrl.subscribe.bind(this, ctrl.props) }>
+              Subscribe
+            </button>
           </div>
         </div>                    
       </form>
@@ -207,19 +217,10 @@ var SubscriptionForm = {
 };
 
 var SubscriptionList = {
-  controller : function(app) {
-    this.subscriptions = [
-      { topic: 'some/topic', qos: 1 },
-      { topic: 'another/topic', qos: 0 },
-      { topic: 'third/topic', qos: 2 },
-    ];
-    this.unsubscribe = function() {
-      console.log('unsubscribe ', arguments);
-    }
-  },
-  view : function(ctrl, args) {
+  view : function(ctrl, app) {
+    app = app.data;
     return (
-      <table class="u-full-width subscription-list">
+      <table class={ app.subscriptions.length ? 'u-full-width subscription-list' : 'u-full-width subscription-list u-hide' }>
         <thead>
           <tr>
             <th>Topic</th>
@@ -228,11 +229,16 @@ var SubscriptionList = {
           </tr>
         </thead>
         <tbody>{
-          ctrl.subscriptions.map(function(el) {          
+          app.subscriptions.map(function(el) {          
             return (<tr>
                       <td>{ el.topic }</td>
                       <td>{ el.qos }</td>
-                      <td><button class="button" type="button" onclick={ ctrl.unsubscribe.bind(this, el) }>Unsubscribe</button></td>
+                      <td>
+                        <button class="button" type="button"
+                          onclick={ app.unsubscribe.bind(this, el.topic) }>
+                          Unsubscribe
+                        </button>
+                      </td>
                     </tr>)
           })}
         </tbody>

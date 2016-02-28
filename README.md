@@ -23,12 +23,13 @@ Roadmap
 -------
 
 - [x] randomly generated clientIds
-- [ ] subscribe / unsubscribe API
+- [x] subscribe / unsubscribe API
 - [ ] publish API
 - [ ] lwt support
 - [ ] test coverage x
 - [ ] minfied build
 - [ ] public release npm/bower
+- [ ] optional logging support
 - [ ] MQTT topic regex support
 - [ ] separate messages event API
 - [ ] extended connection lifecycle callbacks

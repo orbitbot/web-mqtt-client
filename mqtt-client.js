@@ -1,8 +1,11 @@
 var MqttClient = function(args) { // eslint-disable-line no-unused-vars
   'use strict';
+  var slice   = Array.prototype.slice;
+  var compact = function(obj) { return JSON.parse(JSON.stringify(obj)); } // remove undefined fields
+
   var self = this;
   self.connected = false;
-  self.options   = JSON.parse(JSON.stringify({  // remove undefined fields
+  self.options   = compact({
     host              : args.host,
     port              : Number(args.port),
     timeout           : Number(args.timeout)   || 10,
@@ -13,7 +16,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     mqttVersion       : args.mqttVersion       || undefined, 
     userName          : args.username          || undefined,
     password          : args.password          || undefined,
-  }));
+  });
 
   self.emitter = {
     events : {},
@@ -33,7 +36,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
       if (event in self.emitter.events) {
         for (var i = 0; i < self.emitter.events[event].length; ++i) {
           try {
-            self.emitter.events[event][i].apply(self, Array.prototype.slice.call(arguments, 1));
+            self.emitter.events[event][i].apply(self, slice.call(arguments, 1));
           } catch (e) {
             setTimeout(function() { throw e; }); // ensure error is rethrown successfully
           }
@@ -67,16 +70,25 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     self.client.disconnect();
   };
 
+  self.subscribe = function(topic, qos, callback) {
+    self.client.subscribe(topic, callback ? {
+      qos       : Number(qos) || 0,
+      timeout   : 15,
+      onSuccess : callback.bind(self, null),
+      onFailure : callback.bind()
+    } : {});
+  };
+
+  self.unsubscribe = function(topic, callback) {
+    self.client.unsubscribe(topic, callback ? {
+      timeout   : 15,
+      onSuccess : callback.bind(self, null),
+      onFailure : callback.bind()
+    } : {});
+  };
+
   self.publish = function() {
     console.log('publish', arguments);
-  };
-
-  self.subscribe = function() {
-    console.log('subscribe', arguments);
-  };
-
-  self.unsubscribe = function() {
-    console.log('unsubscribe', arguments);
   };
 
   return self;
