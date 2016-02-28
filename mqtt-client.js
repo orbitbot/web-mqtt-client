@@ -50,6 +50,11 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
 
   self.client = new Paho.MQTT.Client(self.options.host, self.options.port, self.options.clientId);
   self.client.onConnectionLost = self.emitter.trigger.bind(self, 'disconnect');
+  self.messageCache = [];
+  self.client.onMessageDelivered = function(msg) {
+    if (self.messageCache.indexOf(msg) >= 0)
+      self.messageCache.splice(self.messageCache.indexOf(msg))[0].callback();
+  };
   self.client.onMessageArrived = function(msg) {
     self.emitter.trigger('message', msg.destinationName, msg.payloadString || msg.payloadBytes, {
       topic     : msg.destinationName,
@@ -95,8 +100,20 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     } : {});
   };
 
-  self.publish = function() {
-    console.log('publish', arguments);
+  self.publish = function(topic, payload, options, callback) {
+    var message = new Paho.MQTT.Message(payload);
+    message.destinationName = topic;
+    message.qos             = Number(options.qos) || 0;
+    message.retain          = options.retain      || false;
+    if (callback) {
+      if (message.qos < 1) {
+        setTimeout(function() { callback(); })
+      } else {
+        message.callback = callback;
+        self.messageCache.push(message);
+      }
+    }
+    self.client.send(message);
   };
 
   return self;

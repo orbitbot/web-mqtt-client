@@ -253,12 +253,16 @@ var PublishForm = {
       topic   : '',
       qos     : 0,
       retain  : false,
-      message : ''
+      payload : ''
+    };
+    this.publish = function(msg) {
+      if (msg.topic.length)
+        app.api.publish(msg)
     };
   },
-  view : function(ctrl, app) {
+  view : function(ctrl) {
     return (
-      <form class="publish-form">
+      <form class="publish-form" onSumbit="event.preventDefault();">
         <div class="row">
           <div class="seven columns">
             <label for="pwdInput">Topic</label>
@@ -285,14 +289,14 @@ var PublishForm = {
           </div>
 
           <div class="two columns">
-            <button class="button-primary u-pull-right" type="button" onclick={ app.api.publish.bind(this, ctrl.msg) }>Publish</button>
+            <button class="button-primary u-pull-right" type="button" onclick={ ctrl.publish.bind(this, ctrl.msg) }>Publish</button>
           </div>
         </div>
 
         <label for="message">Message</label>
         <textarea class="u-full-width" id="message"
-          value={ ctrl.msg.message }
-          onchange={ m.setValue(ctrl.msg, 'message') }>
+          value={ ctrl.msg.payload }
+          onchange={ m.setValue(ctrl.msg, 'payload') }>
         </textarea>
       </form>
     );

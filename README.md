@@ -25,7 +25,7 @@ Roadmap
 - [x] randomly generated clientIds
 - [x] subscribe / unsubscribe API
 - [x] event for incoming messages
-- [ ] publish API
+- [x] publish API
 - [ ] lwt support
 - [ ] test coverage x
 - [ ] minfied build
@@ -48,6 +48,7 @@ Notes
 
 - Paho documentation http://www.eclipse.org/paho/files/jsdoc/index.html
 - promise support for methods? or example for wrapping
+- publish callback if qos 0 is essentially nothing more than a message that message has been delivered to Paho lib...
 
 
 Colophon
