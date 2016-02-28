@@ -51,7 +51,10 @@ App.connect = function(args) {
       m.redraw();
     });
   };
-  App.publish = App.client.publish;
+
+  App.publish = function(param) {
+    App.client.publish(param.topic, param.payload, param, function() { console.log('Published', param); });
+  };
 };
 
 

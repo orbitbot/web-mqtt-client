@@ -253,12 +253,16 @@ var PublishForm = {
       topic   : '',
       qos     : 0,
       retain  : false,
-      message : ''
+      payload : ''
+    };
+    this.publish = function(msg) {
+      if (msg.topic.length)
+        app.api.publish(msg)
     };
   },
-  view : function(ctrl, app) {
+  view : function(ctrl) {
     return (
-      {tag: "form", attrs: {class:"publish-form"}, children: [
+      {tag: "form", attrs: {class:"publish-form", onSumbit:"event.preventDefault();"}, children: [
         {tag: "div", attrs: {class:"row"}, children: [
           {tag: "div", attrs: {class:"seven columns"}, children: [
             {tag: "label", attrs: {for:"pwdInput"}, children: ["Topic"]}, 
@@ -285,14 +289,14 @@ var PublishForm = {
           ]}, 
 
           {tag: "div", attrs: {class:"two columns"}, children: [
-            {tag: "button", attrs: {class:"button-primary u-pull-right", type:"button", onclick: app.api.publish.bind(this, ctrl.msg) }, children: ["Publish"]}
+            {tag: "button", attrs: {class:"button-primary u-pull-right", type:"button", onclick: ctrl.publish.bind(this, ctrl.msg) }, children: ["Publish"]}
           ]}
         ]}, 
 
         {tag: "label", attrs: {for:"message"}, children: ["Message"]}, 
         {tag: "textarea", attrs: {class:"u-full-width", id:"message", 
-          value: ctrl.msg.message, 
-          onchange: m.setValue(ctrl.msg, 'message') }
+          value: ctrl.msg.payload, 
+          onchange: m.setValue(ctrl.msg, 'payload') }
         }
       ]}
     );
