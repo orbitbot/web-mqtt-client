@@ -14,8 +14,14 @@ App.connect = function(args) {
       App.subscriptions = [];
       m.route('/');
     })
-    .on('message', function() {
-      console.log('Got message', arguments);
+    .on('message', function(topic, payload, message) {
+      App.messages.push({
+        topic    : topic,
+        payload  : payload,
+        qos      : message.qos,
+        retained : message.retained,
+      });
+      m.redraw();
     })
     .connect();
 
@@ -35,7 +41,6 @@ App.connect = function(args) {
   };
 
   App.unsubscribe = function(topic) {
-    console.log('unsubscribe', topic);
     App.client.unsubscribe(topic, function(error, reply) {
       if (error)
         console.error('Error unsubscribing from ' + topic, error);

@@ -158,14 +158,14 @@ var ConnectedWidget = {
         ]}, 
 
         {tag: "h5", attrs: {}, children: ["Subscriptions"]}, 
-        m.component(SubscriptionList, {data: app }), 
+        m.component(SubscriptionList, {api: app }), 
         m.component(SubscriptionForm, {api: app }), 
 
         {tag: "h5", attrs: {}, children: ["Publish"]}, 
         m.component(PublishForm, {api: app }), 
 
         {tag: "h5", attrs: {}, children: ["Messages"]}, 
-        Messages
+        m.component(Messages, {api: app })
       ]}
     );
   },
@@ -218,7 +218,7 @@ var SubscriptionForm = {
 
 var SubscriptionList = {
   view : function(ctrl, app) {
-    app = app.data;
+    app = app.api;
     return (
       {tag: "table", attrs: {class: app.subscriptions.length ? 'u-full-width subscription-list' : 'u-full-width subscription-list u-hide'}, children: [
         {tag: "thead", attrs: {}, children: [
@@ -300,24 +300,18 @@ var PublishForm = {
 };
 
 var Messages = {
-  controller : function(args) {
-    this.messages = [
-      { topic: 'some/topic'   , qos: 1, retained: true , message: 'something to write about a lorem like thing' },
-      { topic: 'another/topic', qos: 0, retained: false, message: 'something to write about a lorem like thing' },
-      { topic: 'third/topic'  , qos: 2, retained: true , message: 'something to write about a lorem like thing' },
-    ];
-  },
-  view : function(ctrl, args) {
+  view : function(ctrl, app) {
+    app = app.api;
     return (
       {tag: "div", attrs: {}, children: [
-        ctrl.messages.map(function(msg) {
+        app.messages.map(function(msg) {
             return ({tag: "div", attrs: {}, children: [
                       {tag: "div", attrs: {class:"row"}, children: [
                         {tag: "div", attrs: {class:"eight columns"}, children: ["Topic: ",  msg.topic]}, 
                         {tag: "div", attrs: {class:"two columns"}, children: ["QoS: ",  msg.qos]}, 
                         {tag: "div", attrs: {class:"two columns"}, children: [ msg.retained ? 'Retained' : '']}
                       ]}, 
-                      {tag: "pre", attrs: {}, children: [{tag: "code", attrs: {}, children: [ msg.message]}]}
+                      {tag: "pre", attrs: {}, children: [{tag: "code", attrs: {}, children: [ msg.payload]}]}
                     ]}
             );
         })
