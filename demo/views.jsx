@@ -158,14 +158,14 @@ var ConnectedWidget = {
         </div>
 
         <h5>Subscriptions</h5>
-        <SubscriptionList data={ app } />
+        <SubscriptionList api={ app } />
         <SubscriptionForm api={ app } />
 
         <h5>Publish</h5>
         <PublishForm api={ app } />
 
         <h5>Messages</h5>
-        <Messages />
+        <Messages api={ app } />
       </div>
     );
   },
@@ -218,7 +218,7 @@ var SubscriptionForm = {
 
 var SubscriptionList = {
   view : function(ctrl, app) {
-    app = app.data;
+    app = app.api;
     return (
       <table class={ app.subscriptions.length ? 'u-full-width subscription-list' : 'u-full-width subscription-list u-hide' }>
         <thead>
@@ -300,24 +300,18 @@ var PublishForm = {
 };
 
 var Messages = {
-  controller : function(args) {
-    this.messages = [
-      { topic: 'some/topic'   , qos: 1, retained: true , message: 'something to write about a lorem like thing' },
-      { topic: 'another/topic', qos: 0, retained: false, message: 'something to write about a lorem like thing' },
-      { topic: 'third/topic'  , qos: 2, retained: true , message: 'something to write about a lorem like thing' },
-    ];
-  },
-  view : function(ctrl, args) {
+  view : function(ctrl, app) {
+    app = app.api;
     return (
       <div>{
-        ctrl.messages.map(function(msg) {
+        app.messages.map(function(msg) {
             return (<div>
                       <div class="row">
                         <div class="eight columns">Topic: { msg.topic }</div>
                         <div class="two columns">QoS: { msg.qos }</div>
                         <div class="two columns">{ msg.retained ? 'Retained' : '' }</div>
                       </div>
-                      <pre><code>{ msg.message }</code></pre>
+                      <pre><code>{ msg.payload }</code></pre>
                     </div>
             );
         })

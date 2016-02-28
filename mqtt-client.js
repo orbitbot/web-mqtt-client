@@ -50,17 +50,25 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
 
   self.client = new Paho.MQTT.Client(self.options.host, self.options.port, self.options.clientId);
   self.client.onConnectionLost = self.emitter.trigger.bind(self, 'disconnect');
-  self.client.onMessageArrived = self.emitter.trigger.bind(self, 'message');
+  self.client.onMessageArrived = function(msg) {
+    self.emitter.trigger('message', msg.destinationName, msg.payloadString || msg.payloadBytes, {
+      topic     : msg.destinationName,
+      qos       : msg.qos,
+      retained  : msg.retained,
+      payload   : msg.payloadBytes,
+      duplicate : msg.duplicate,
+    });
+  }
 
   self.connect = function() {
     self.on('connect',    function() { self.connected = true; });
     self.on('disconnect', function() { self.connected = false; });
 
-    var connectOptions = Object.create(self.options);
-    connectOptions.onSuccess = self.emitter.trigger.bind(self, 'connect');
-    connectOptions.onFailure = self.emitter.trigger.bind(self, 'disconnect');
+    var config = Object.create(self.options);
+    config.onSuccess = self.emitter.trigger.bind(self, 'connect');
+    config.onFailure = self.emitter.trigger.bind(self, 'disconnect');
 
-    self.client.connect(connectOptions);
+    self.client.connect(config);
 
     return self;
   };

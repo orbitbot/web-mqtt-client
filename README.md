@@ -24,6 +24,7 @@ Roadmap
 
 - [x] randomly generated clientIds
 - [x] subscribe / unsubscribe API
+- [x] event for incoming messages
 - [ ] publish API
 - [ ] lwt support
 - [ ] test coverage x
