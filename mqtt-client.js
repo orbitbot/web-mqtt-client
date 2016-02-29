@@ -1,21 +1,32 @@
 var MqttClient = function(args) { // eslint-disable-line no-unused-vars
   'use strict';
-  var slice   = Array.prototype.slice;
-  var compact = function(obj) { return JSON.parse(JSON.stringify(obj)); } // remove undefined fields
+  var slice         = Array.prototype.slice;
+  var compact       = function(obj) { return JSON.parse(JSON.stringify(obj)); } // remove undefined fields, also works as copy
+  var createMessage = function(topic, payload, qos, retain) {
+    var message = new Paho.MQTT.Message(payload);
+    message.destinationName = topic;
+    message.qos             = Number(qos) || 0;
+    message.retain          = retain      || false;
+
+    return message;
+  };
 
   var self = this;
   self.connected = false;
-  self.options   = compact({
+  self.broker = compact({
     host              : args.host,
     port              : Number(args.port),
+    clientId          : args.clientId || 'client-' + Math.random().toString(36).slice(-6),
+  });
+  self.options   = compact({
     timeout           : Number(args.timeout)   || 10,
     useSSL            : args.ssl               || false,
     cleanSession      : args.clean             || true,
     keepAliveInterval : Number(args.keepalive) || 30,
-    clientId          : args.clientId          || 'client-' + Math.random().toString(36).slice(-6),
     mqttVersion       : args.mqttVersion       || undefined, 
     userName          : args.username          || undefined,
     password          : args.password          || undefined,
+    willMessage       : (args.will && args.will.topic.length) ? args.will : undefined,
   });
 
   self.emitter = {
@@ -48,7 +59,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
   self.bind   = self.emitter.bind;
   self.unbind = self.emitter.unbind;
 
-  self.client = new Paho.MQTT.Client(self.options.host, self.options.port, self.options.clientId);
+  self.client = new Paho.MQTT.Client(self.broker.host, self.broker.port, self.broker.clientId);
   self.client.onConnectionLost = self.emitter.trigger.bind(self, 'disconnect');
   self.messageCache = [];
   self.client.onMessageDelivered = function(msg) {
@@ -69,9 +80,13 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     self.on('connect',    function() { self.connected = true; });
     self.on('disconnect', function() { self.connected = false; });
 
-    var config = Object.create(self.options);
+    var config = compact(self.options);
     config.onSuccess = self.emitter.trigger.bind(self, 'connect');
     config.onFailure = self.emitter.trigger.bind(self, 'disconnect');
+    if (config.willMessage)
+      config.willMessage = createMessage(config.willMessage.topic, config.willMessage.payload, config.willMessage.qos, config.willMessage.retain);
+
+    console.log(config);
 
     self.client.connect(config);
 
@@ -79,7 +94,6 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
   };
 
   self.disconnect = function() {
-    console.log('disconnect');
     self.client.disconnect();
   };
 
@@ -101,10 +115,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
   };
 
   self.publish = function(topic, payload, options, callback) {
-    var message = new Paho.MQTT.Message(payload);
-    message.destinationName = topic;
-    message.qos             = Number(options.qos) || 0;
-    message.retain          = options.retain      || false;
+    var message = createMessage(topic, payload, options.qos, options.retain);
     if (callback) {
       if (message.qos < 1) {
         setTimeout(function() { callback(); })

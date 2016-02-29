@@ -26,8 +26,8 @@ App.connect = function(args) {
     .connect();
 
   // expose functionality and data to views
-  App.host     = App.client.options.host;
-  App.clientId = App.client.options.clientId;
+  App.host     = App.client.broker.host;
+  App.clientId = App.client.broker.clientId;
 
   App.disconnect  = App.client.disconnect;
   App.subscribe = function(param) {
@@ -60,6 +60,6 @@ App.connect = function(args) {
 
 m.route.mode = 'hash';
 m.route(document.getElementById('content'), '/', {
-  '/'          : m(ConnectForm, { connect: App.connect }),
+  '/'          : m(ConnectForm, { connect: App.connect }, App),
   '/connected' : m(ConnectedWidget, App),
 });

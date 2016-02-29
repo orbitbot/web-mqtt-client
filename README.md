@@ -26,7 +26,7 @@ Roadmap
 - [x] subscribe / unsubscribe API
 - [x] event for incoming messages
 - [x] publish API
-- [ ] lwt support
+- [x] lwt support
 - [ ] test coverage x
 - [ ] minfied build
 - [ ] public release npm/bower

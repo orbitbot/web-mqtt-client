@@ -9,7 +9,9 @@ m.setAttr = function(obj, prop, attr) {
 
 
 var ConnectForm = {
-  controller : function(api) {
+  controller : function(api, client) {
+    if (client && client.connected)
+      return m.route('/connected');
     this.props = (localStorage['connect:input'] && JSON.parse(localStorage['connect:input'])) ||
     {
       host      : '',
@@ -21,10 +23,10 @@ var ConnectForm = {
       username  : '',
       password  : '',
       will : {
-        topic  : '',
-        data   : '',
-        retain : false,
-        qos    : 0,
+        topic   : '',
+        qos     : 0,
+        retain  : false,
+        payload : '',
       }
     };
     this.onunload = function() {
@@ -131,8 +133,8 @@ var ConnectForm = {
 
         {tag: "label", attrs: {for:"lwtMessage"}, children: ["Last-will Message"]}, 
         {tag: "textarea", attrs: {class:"u-full-width", id:"lwtMessage", 
-          value: ctrl.props.will.data, 
-          onchange: m.setValue(ctrl.props.will, 'data') }
+          value: ctrl.props.will.payload, 
+          onchange: m.setValue(ctrl.props.will, 'payload') }
         }, 
 
         {tag: "button", attrs: {class:"button", type:"button", onclick: ctrl.clear}, children: ["Clear"]}
