@@ -45,6 +45,7 @@ Roadmap
 - [ ] filter subscription/unsubscription calls to broker if topic has other callbacks
 - [ ] filter sub/unsub is QoS-aware
 - [ ] automatic resubscription of topics on reconnect
+- [ ] optimize compression
 
 
 Notes

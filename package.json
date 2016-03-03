@@ -1,11 +1,12 @@
 {
   "name": "web-mqtt-client",
-  "version": "0.0.1",
+  "version": "0.9.0",
   "description": "A better MQTT API for the browser",
-  "private": true,
   "main": "mqtt-client.js",
+  "files": [ "mqtt-client.js", "mqtt-client.min.js" ],
   "scripts": {
-    "test": "electron-mocha --renderer --reporter spec mqtt-client.js ./test"
+    "test": "electron-mocha --renderer --reporter spec mqtt-client.js ./test",
+    "minify": "uglifyjs mqtt-client.js -o mqtt-client.min.js -c --m --screw-ie8"
   },
   "repository": {
     "type": "git",
