@@ -32,8 +32,8 @@ Roadmap
 - [x] publish API
 - [x] lwt support
 - [ ] test coverage x
-- [ ] minfied build
-- [ ] public release npm/bower
+- [x] minfied build
+- [x] public release npm/bower
 - [ ] optional logging support
 - [ ] MQTT topic regex support
 - [ ] separate messages event API
