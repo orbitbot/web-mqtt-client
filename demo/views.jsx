@@ -1,10 +1,10 @@
 // avoid m.prop usage -- https://gist.github.com/mindeavor/0bf02f1f21c72de9fb49
-m.setValue = function(obj, prop) {
-  return m.withAttr('value', function(value) { obj[prop] = value });
+m.setValue = function(obj, prop, callback) {
+  return m.withAttr('value', function(value) { obj[prop] = callback ? callback(value) : value });
 };
 
-m.setAttr = function(obj, prop, attr) {
-  return m.withAttr(attr, function(value) { obj[prop] = value });
+m.setAttr = function(obj, prop, attr, callback) {
+  return m.withAttr(attr, function(value) { obj[prop] = callback ? callback(value) : value });
 }
 
 
@@ -116,9 +116,9 @@ var ConnectForm = {
           <div class="two columns">
             <label for="qosInput">QoS</label>
             <select class="u-full-width" id="qosInput"
-              onchange={ m.setValue(ctrl.props.will, 'qos') }>
+              onchange={ m.setValue(ctrl.props.will, 'qos', Number) }>
                 {[0, 1, 2].map(function(el) {
-                  return (<option value={ Number(el) }>{ el }</option>);
+                  return (<option value={ el } selected={ el === ctrl.props.will.qos }>{ el }</option>);
                 })}
             </select>
           </div>
@@ -201,7 +201,7 @@ var SubscriptionForm = {
             <select class="u-full-width" id="qosInput"
               onchange={ m.setValue(ctrl.props, 'qos') }>
                 {[0, 1, 2].map(function(el) {
-                  return (<option value={ Number(el) }>{ el }</option>);
+                  return (<option value={ el }>{ el }</option>);
                 })}
             </select>
           </div>
@@ -278,7 +278,7 @@ var PublishForm = {
             <select class="u-full-width" id="qosInput"
               onchange={ m.setValue(ctrl.msg, 'qos') }>
                 {[0, 1, 2].map(function(el) {
-                  return (<option value={ Number(el) }>{ el }</option>);
+                  return (<option value={ el }>{ el }</option>);
                 })}
             </select>
           </div>

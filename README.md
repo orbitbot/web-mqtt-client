@@ -1,6 +1,10 @@
 # web-mqtt-client
 > A better MQTT API for the browser
 
+## Under development, but usable
+
+Example use under the `demo/` folder, while documentation is missing.
+
 
 Motivation
 ----------
@@ -49,7 +53,7 @@ Notes
 - Paho documentation http://www.eclipse.org/paho/files/jsdoc/index.html
 - promise support for methods? or example for wrapping
 - publish callback if qos 0 is essentially nothing more than a message that message has been delivered to Paho lib...
-
+- piggyback on Paho error reporting or do own validation?
 
 Colophon
 --------
