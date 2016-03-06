@@ -31,9 +31,20 @@ Roadmap
 - [x] event for incoming messages
 - [x] publish API
 - [x] lwt support
-- [ ] test coverage x
 - [x] minfied build
 - [x] public release npm/bower
+
+**1.0.0**
+
+- [x] unit test setup
+- [ ] CI test configuration (travis)
+- [ ] eslint configuration
+- [ ] test coverage x
+- [ ] lightweight API documentation
+- [ ] publish demo to gh-pages
+
+Future
+
 - [ ] optional logging support
 - [ ] MQTT topic regex support
 - [ ] separate messages event API
@@ -41,11 +52,13 @@ Roadmap
 - [ ] reconnection callback
 - [ ] rewrite Paho Errors
 - [ ] proper linting config
+- [ ] integration tests against Mosca
 - [ ] test coverage x
 - [ ] filter subscription/unsubscription calls to broker if topic has other callbacks
 - [ ] filter sub/unsub is QoS-aware
 - [ ] automatic resubscription of topics on reconnect
 - [ ] optimize compression
+- [ ] provide sourcemaps
 
 
 Notes
