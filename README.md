@@ -26,6 +26,8 @@ Features
 Roadmap
 -------
 
+**0.9.0**
+
 - [x] randomly generated clientIds
 - [x] subscribe / unsubscribe API
 - [x] event for incoming messages

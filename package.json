@@ -8,7 +8,7 @@
     "mqtt-client.min.js"
   ],
   "scripts": {
-    "test": "electron-mocha --renderer --reporter spec --scripts demo/paho/mqttws31.js,mqtt-client.min.js ./test/",
+    "test": "electron-mocha --renderer --reporter spec --scripts demo/paho/mqttws31.js,mqtt-client.js ./test/",
     "minify": "uglifyjs mqtt-client.js -o mqtt-client.min.js -c --m --screw-ie8"
   },
   "repository": {

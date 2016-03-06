@@ -6,7 +6,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     var message = new Paho.MQTT.Message(payload);
     message.destinationName = topic;
     message.qos             = Number(qos) || 0;
-    message.retain          = retain      || false;
+    message.retain          = retain !== undefined ? retain : false;
 
     return message;
   };
@@ -20,19 +20,19 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
   });
   self.options   = compact({
     timeout           : Number(args.timeout)   || 10,
-    useSSL            : args.ssl               || false,
-    cleanSession      : args.clean             || true,
     keepAliveInterval : Number(args.keepalive) || 30,
     mqttVersion       : args.mqttVersion       || undefined, 
     userName          : args.username          || undefined,
     password          : args.password          || undefined,
+    useSSL            : (args.ssl !== undefined) ? args.ssl : false,
+    cleanSession      : (args.clean !== undefined) ? args.clean : true,
     willMessage       : (args.will && args.will.topic.length) ? args.will : undefined,
   });
 
   self.emitter = {
     events : {},
     bind   : function(event, func) {
-      self.emitter.events[event] = self.emitter.events[event] || [];
+      self.emitter.events[event] = self.emitter.events[event] || [];
       self.emitter.events[event].push(func);
 
       return self;
@@ -85,8 +85,6 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     config.onFailure = self.emitter.trigger.bind(self, 'disconnect');
     if (config.willMessage)
       config.willMessage = createMessage(config.willMessage.topic, config.willMessage.payload, config.willMessage.qos, config.willMessage.retain);
-
-    console.log(config);
 
     self.client.connect(config);
 
