@@ -3,7 +3,7 @@
 
 ## Under development, but usable
 
-Example use under the `demo/` folder, while documentation is missing.
+Example use under the `demo/` folder and partially in tests, while documentation is missing.
 
 
 Motivation
