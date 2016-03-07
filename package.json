@@ -8,8 +8,9 @@
     "mqtt-client.min.js"
   ],
   "scripts": {
-    "test": "electron-mocha --renderer --reporter spec --scripts paho/mqttws31.js,mqtt-client.js ./test/",
-    "minify": "uglifyjs mqtt-client.js -o mqtt-client.min.js -c --m --screw-ie8"
+    "test": "electron-mocha --renderer --R spec --scripts paho/mqttws31.js,mqtt-client.js ./test/",
+    "minify": "uglifyjs mqtt-client.js -o mqtt-client.min.js -c --m --screw-ie8",
+    "lint": "eslint --fix -c config/eslint.conf mqtt-client.js; exit 0"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,8 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "electron-mocha": "orbitbot/electron-mocha",
+    "eslint": "^2.3.0",
+    "eslint-config-airbnb": "^6.1.0",
     "sinon": "^1.17.3",
     "uglify-js": "^2.6.1"
   }

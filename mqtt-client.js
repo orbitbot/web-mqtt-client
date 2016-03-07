@@ -1,7 +1,6 @@
 var MqttClient = function(args) { // eslint-disable-line no-unused-vars
-  'use strict';
   var slice         = Array.prototype.slice;
-  var compact       = function(obj) { return JSON.parse(JSON.stringify(obj)); } // remove undefined fields, also works as copy
+  var compact       = function(obj) { return JSON.parse(JSON.stringify(obj)); }; // remove undefined fields, also works as copy
   var createMessage = function(topic, payload, qos, retain) {
     var message = new Paho.MQTT.Message(payload);
     message.destinationName = topic;
@@ -14,16 +13,16 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
   var self = this;
   self.connected = false;
   self.broker = compact({
-    host              : args.host,
-    port              : Number(args.port),
-    clientId          : args.clientId || 'client-' + Math.random().toString(36).slice(-6),
+    host     : args.host,
+    port     : Number(args.port),
+    clientId : args.clientId || 'client-' + Math.random().toString(36).slice(-6),
   });
-  self.options   = compact({
-    timeout           : Number(args.timeout)   || 10,
+  self.options = compact({
+    timeout           : Number(args.timeout) || 10,
     keepAliveInterval : Number(args.keepalive) || 30,
-    mqttVersion       : args.mqttVersion       || undefined, 
-    userName          : args.username          || undefined,
-    password          : args.password          || undefined,
+    mqttVersion       : args.mqttVersion || undefined,
+    userName          : args.username || undefined,
+    password          : args.password || undefined,
     useSSL            : (args.ssl !== undefined) ? args.ssl : false,
     cleanSession      : (args.clean !== undefined) ? args.clean : true,
     willMessage       : (args.will && args.will.topic.length) ? args.will : undefined,
@@ -38,7 +37,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
       return self;
     },
     unbind : function(event, func) {
-      if (event in self.emitter.events) 
+      if (event in self.emitter.events)
         self.emitter.events[event].splice(self.emitter.events[event].indexOf(func), 1);
 
       return self;
@@ -74,17 +73,21 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
       payload   : msg.payloadBytes,
       duplicate : msg.duplicate,
     });
-  }
+  };
 
   self.connect = function() {
-    self.on('connect',    function() { self.connected = true; });
+    self.on('connect', function() { self.connected = true; });
     self.on('disconnect', function() { self.connected = false; });
 
     var config = compact(self.options);
     config.onSuccess = self.emitter.trigger.bind(self, 'connect');
     config.onFailure = self.emitter.trigger.bind(self, 'disconnect');
-    if (config.willMessage)
-      config.willMessage = createMessage(config.willMessage.topic, config.willMessage.payload, config.willMessage.qos, config.willMessage.retain);
+    if (config.willMessage) {
+      config.willMessage = createMessage(config.willMessage.topic,
+                                         config.willMessage.payload,
+                                         config.willMessage.qos,
+                                         config.willMessage.retain);
+    }
 
     self.client.connect(config);
 
@@ -100,7 +103,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
       qos       : Number(qos) || 0,
       timeout   : 15,
       onSuccess : callback.bind(self, null),
-      onFailure : callback.bind()
+      onFailure : callback.bind(),
     } : {});
   };
 
@@ -108,7 +111,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     self.client.unsubscribe(topic, callback ? {
       timeout   : 15,
       onSuccess : callback.bind(self, null),
-      onFailure : callback.bind()
+      onFailure : callback.bind(),
     } : {});
   };
 
@@ -116,7 +119,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     var message = createMessage(topic, payload, options.qos, options.retain);
     if (callback) {
       if (message.qos < 1) {
-        setTimeout(function() { callback(); })
+        setTimeout(function() { callback(); });
       } else {
         message.callback = callback;
         self.messageCache.push(message);
@@ -126,4 +129,4 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
   };
 
   return self;
-}
+};
