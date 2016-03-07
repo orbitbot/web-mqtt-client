@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "compile-css": "cat node_modules/normalize.css/normalize.css node_modules/skeleton-framework/dist/skeleton.css > css/lib.css",
-    "compile-lib": "uglifyjs node_modules/mithril/mithril.js ./paho/mqttws31.js ../mqtt-client.js -o js/lib.js",
+    "compile-lib": "uglifyjs node_modules/mithril/mithril.js ../paho/mqttws31.js ../mqtt-client.js -o js/lib.js",
     "compile-js": "msx views.jsx > js/views.js"
   },
   "devDependencies": {

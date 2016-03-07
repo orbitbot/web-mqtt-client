@@ -39,7 +39,7 @@ Roadmap
 **1.0.0**
 
 - [x] unit test setup
-- [ ] CI test configuration (travis)
+- [x] CI test configuration (travis)
 - [ ] eslint configuration
 - [ ] test coverage x
 - [ ] lightweight API documentation
