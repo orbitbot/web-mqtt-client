@@ -41,7 +41,7 @@ Roadmap
 - [x] unit test setup
 - [x] CI test configuration (travis)
 - [x] eslint configuration
-- [ ] test coverage x
+- [x] test coverage x
 - [ ] lightweight API documentation
 - [ ] publish demo to gh-pages
 

@@ -10,7 +10,10 @@
   "scripts": {
     "test": "electron-mocha --renderer --R spec --scripts paho/mqttws31.js,mqtt-client.js ./test/",
     "minify": "uglifyjs mqtt-client.js -o mqtt-client.min.js -c --m --screw-ie8",
-    "lint": "eslint --fix -c config/eslint.conf mqtt-client.js; exit 0"
+    "lint": "eslint --fix -c config/eslint.conf mqtt-client.js; exit 0",
+    "precoverage-test": "mkdir -p coverage && istanbul instrument mqtt-client.js -o coverage/mqtt-client.instrumented.js",
+    "coverage-test": "istanbul cover electron-mocha -- --renderer --R spec --scripts paho/mqttws31.js,coverage/mqtt-client.instrumented.js ./test/ ./test/coverage/coverageReport.js",
+    "coverage-details": "istanbul report lcov && opn coverage/lcov-report/index.html"
   },
   "repository": {
     "type": "git",
@@ -32,6 +35,9 @@
     "electron-mocha": "orbitbot/electron-mocha",
     "eslint": "^2.3.0",
     "eslint-config-airbnb": "^6.1.0",
+    "istanbul": "^0.4.2",
+    "istanbul-text-full-reporter": "^0.1.2",
+    "opn-cli": "^3.1.0",
     "sinon": "^1.17.3",
     "uglify-js": "^2.6.1"
   }
