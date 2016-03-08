@@ -14,12 +14,15 @@
   "moduleType": "globals",
   "homepage": "https://github.com/orbitbot/web-mqtt-client",
   "ignore": [
-    ".gitignore",
-    "node_modules",
-    "test",
-    "demo",
     "config",
-    "package.json",
+    "coverage",
+    "demo",
+    "node_modules",
+    "paho",
+    "test",
+    ".gitignore",
+    "*.yml"
+    "*.json",
     "mqtt-client.min.js"
   ]
 }
