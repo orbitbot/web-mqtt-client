@@ -1417,3 +1417,55 @@ hr {
 /* Larger than Desktop HD */
 
 @media (min-width: 1200px) {}
+input[type="checkbox"] {
+  display: none;
+}
+
+input[type="checkbox"] + label {
+  position: relative;
+  top: 0.1rem;
+  z-index: 1;
+  display: inline;
+  padding-right: 0;
+  padding-left: 1.6rem;
+  font-size: 1.3rem;
+  cursor: pointer;
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
+}
+
+input[type="checkbox"]:checked + label {
+  background-color: #33C3F0;
+  border: 1px solid #33C3F0;
+}
+
+input[type=checkbox]:checked + label:after {
+  position: absolute;
+  top: 0.6ex;
+  left: 0.4ex;
+  width: 1.6ex;
+  height: 0.8ex;
+  border: 3px solid #fff;
+  border-top: none;
+  border-right: none;
+  content: '';
+  transform: rotate(-42deg);
+}
+
+
+input[type="checkbox"][disabled] + label {
+  cursor: default;
+  background-color: #f1f1f1;
+  border: 1px solid #f1f1f1;
+}
+
+input[type="checkbox"][disabled]:checked + label {
+  background-color: #f1f1f1;
+  border: 1px solid #f1f1f1; 
+}
+
+input[type=checkbox][disabled]:checked + label:after {
+  border: 3px solid #e1e1e1;
+  border-top: none;
+  border-right: none;
+}

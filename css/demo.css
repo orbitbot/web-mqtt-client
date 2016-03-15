@@ -63,3 +63,7 @@ table {
 .subscribe-form button {
   margin-top: 2.1rem;
 }
+
+input[type="checkbox"] + label {
+  top: 0.5rem;
+}

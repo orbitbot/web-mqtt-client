@@ -64,14 +64,16 @@ var ConnectForm = {
             {tag: "label", attrs: {for:"sslInput"}, children: ["SSL"]}, 
             {tag: "input", attrs: {type:"checkbox", id:"sslInput", 
               checked: ctrl.props.ssl, 
-              onclick: m.setAttr(ctrl.props, 'ssl', 'checked') }}
+              onclick: m.setAttr(ctrl.props, 'ssl', 'checked') }}, 
+            {tag: "label", attrs: {for:"sslInput"}}
           ]}, 
 
           {tag: "div", attrs: {class:"three columns"}, children: [
             {tag: "label", attrs: {for:"cleanInput"}, children: ["Clean session"]}, 
             {tag: "input", attrs: {type:"checkbox", id:"cleanInput", 
               checked: ctrl.props.clean, 
-              onclick: m.setAttr(ctrl.props, 'clean', 'checked') }}
+              onclick: m.setAttr(ctrl.props, 'clean', 'checked') }}, 
+            {tag: "label", attrs: {for:"cleanInput"}}
           ]}
         ]}, 
 
@@ -127,7 +129,8 @@ var ConnectForm = {
             {tag: "label", attrs: {for:"lwtRetainInput"}, children: ["Retain"]}, 
             {tag: "input", attrs: {type:"checkbox", id:"lwtRetainInput", 
               checked: ctrl.props.will.retain, 
-              onclick: m.setAttr(ctrl.props.will, 'retain', 'checked') }}
+              onclick: m.setAttr(ctrl.props.will, 'retain', 'checked') }}, 
+            {tag: "label", attrs: {for:"lwtRetainInput"}}
           ]}
         ]}, 
 
@@ -287,7 +290,8 @@ var PublishForm = {
             {tag: "label", attrs: {for:"lwtRetainInput"}, children: ["Retain"]}, 
             {tag: "input", attrs: {type:"checkbox", id:"lwtRetainInput", 
               checked: ctrl.msg.retain, 
-              onclick: m.setAttr(ctrl.msg, 'retain', 'checked') }}
+              onclick: m.setAttr(ctrl.msg, 'retain', 'checked') }}, 
+            {tag: "label", attrs: {for:"lwtRetainInput"}}
           ]}, 
 
           {tag: "div", attrs: {class:"two columns"}, children: [
