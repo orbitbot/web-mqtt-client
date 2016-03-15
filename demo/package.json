@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "compile-css": "cat node_modules/normalize.css/normalize.css node_modules/skeleton-framework/dist/skeleton.css > css/lib.css",
+    "compile-css": "cat node_modules/normalize.css/normalize.css node_modules/skeleton-framework/dist/skeleton.css node_modules/skeleton-checkboxes/skeleton-checkboxes.css > css/lib.css",
     "compile-lib": "uglifyjs node_modules/mithril/mithril.js ../paho/mqttws31.js ../mqtt-client.js -o js/lib.js",
     "compile-js": "msx views.jsx > js/views.js"
   },
@@ -11,6 +11,7 @@
     "mithril": "^0.2.2-rc.1",
     "msx": "^0.4.1",
     "normalize.css": "^3.0.3",
+    "skeleton-checkboxes": "^1.0.2",
     "skeleton-framework": "^1.0.7",
     "uglify-js": "^2.6.1"
   }

@@ -65,6 +65,7 @@ var ConnectForm = {
             <input type="checkbox" id="sslInput"
               checked={ ctrl.props.ssl }
               onclick={ m.setAttr(ctrl.props, 'ssl', 'checked') } />
+            <label for="sslInput"></label>
           </div>
 
           <div class="three columns">
@@ -72,6 +73,7 @@ var ConnectForm = {
             <input type="checkbox" id="cleanInput"
               checked={ ctrl.props.clean }
               onclick={ m.setAttr(ctrl.props, 'clean', 'checked') } />
+            <label for="cleanInput"></label>
           </div>
         </div>
 
@@ -128,6 +130,7 @@ var ConnectForm = {
             <input type="checkbox" id="lwtRetainInput"
               checked={ ctrl.props.will.retain }
               onclick={ m.setAttr(ctrl.props.will, 'retain', 'checked') } />
+            <label for="lwtRetainInput"></label>
           </div>
         </div>
 
@@ -288,6 +291,7 @@ var PublishForm = {
             <input type="checkbox" id="lwtRetainInput"
               checked={ ctrl.msg.retain }
               onclick={ m.setAttr(ctrl.msg, 'retain', 'checked') } />
+            <label for="lwtRetainInput"></label>
           </div>
 
           <div class="two columns">
