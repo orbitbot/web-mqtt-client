@@ -13,7 +13,8 @@
     "lint": "eslint --fix -c config/eslint.conf mqtt-client.js; exit 0",
     "precoverage-test": "mkdir -p coverage && istanbul instrument mqtt-client.js -o coverage/mqtt-client.instrumented.js",
     "coverage-test": "istanbul cover electron-mocha -- --renderer --R spec --scripts paho/mqttws31.js,coverage/mqtt-client.instrumented.js ./test/ ./test/coverage/coverageReport.js",
-    "coverage-details": "istanbul report lcov && opn coverage/lcov-report/index.html"
+    "coverage-details": "istanbul report lcov && opn coverage/lcov-report/index.html",
+    "ghp-deploy": "git subtree push --prefix demo origin gh-pages"
   },
   "repository": {
     "type": "git",
