@@ -21,7 +21,7 @@
     "paho",
     "test",
     ".gitignore",
-    "*.yml"
+    "*.yml",
     "*.json",
     "mqtt-client.min.js"
   ]

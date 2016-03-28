@@ -75,12 +75,11 @@ Unsubscribe from `topic`, `callback` will be fired when the broker acknowledges 
 Publish `payload` to `topic`, `callback` will be fired when the broker acknowledges the request. **NB.** if qos is 0 and a callback is provieded functionality is identical to the `subscribe` callback.
 
 `options` are optional and can specify any of the following:
-```
+```js
 {
     qos    : <optional> - default 0,
     retain : <optional> - deafult false,
 }
-
 ```
 
 <br>
@@ -109,7 +108,7 @@ client.on('message', function handleMessage(topic, payload, details) {
 - `payload` is either the UTF-8 encoded String in the message if parsed by Paho, or the payload as an ArrayBuffer
 - `details` is an object containing
 
-```
+```js
 {
     topic     : /* String */, 
     qos       : /* 0 | 1 | 2 */,
