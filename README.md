@@ -1,30 +1,24 @@
 # web-mqtt-client
 > A better MQTT API for the browser
 
-## Under development, but usable
+`web-mqtt-client` is a wrapper around the [Eclipse Paho MQTT javascript client](https://eclipse.org/paho/clients/js/), and offers an improved programmatic API somewhat similar to [MQTT.js](https://github.com/mqttjs/MQTT.js) in a much smaller package than the latter browserified. Further improvements will also be implemented as this library matures (see Roadmap below).
 
-Example use under the `demo/` folder and partially in tests, while documentation is missing.
+An example of this library in use is available on [`gh-pages`](https://orbitbot.github.io/web-mqtt-client), source code and resources for the example under the `demo/` folder.
 
-
-Motivation
-----------
-
-- Paho offers clunky API
-- MQTT.js browserified is large
-- neither works completely intelligently re: subscriptions etc
+The event emitter implementations in this project are based on [microevents.js](https://github.com/jeromeetienne/microevent.js).
 
 
-Features
---------
+Installation
+------------
 
-- wraps Eclipse Paho
-- no own dependencies
-- only x KB, y minified, z, min + gz
+```sh
+$ npm install web-mqtt-client
+$ bower install web-mqtt-client
+```
 
 
-
-Roadmap
--------
+Roadmap & Changelog
+-------------------
 
 **0.9.0**
 
@@ -42,8 +36,8 @@ Roadmap
 - [x] CI test configuration (travis)
 - [x] eslint configuration
 - [x] test coverage x
-- [ ] lightweight API documentation
-- [ ] publish demo to gh-pages
+- [x] lightweight API documentation
+- [x] publish demo to gh-pages
 
 Future
 
@@ -71,7 +65,3 @@ Notes
 - publish callback if qos 0 is essentially nothing more than a message that message has been delivered to Paho lib...
 - piggyback on Paho error reporting or do own validation?
 
-Colophon
---------
-
-- microevents.js
