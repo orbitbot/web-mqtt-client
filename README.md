@@ -54,6 +54,7 @@ var client = new MqttClient({
 });
 ```
 
+<br>
 The client exposes the following methods
 
 #### client.connect()
@@ -63,7 +64,7 @@ Connect and disconnect to/from the broker specified when this client was initial
 
 #### client.subscribe(topic, qos, callback)
 
-Subscribe to `topic` with `qos`, and optionally attach a callback to be fired when subscription is acknowledged. NB. if qos is 0 and a callback is provided, the callback will essentially only mean that the subscription request was delivered to the Paho library.
+Subscribe to `topic` with `qos`, and optionally attach a callback to be fired when subscription is acknowledged. **NB.** if qos is 0 and a callback is provided, the callback will essentially only mean that the subscription request was delivered to the Paho library.
 
 #### client.unsubscribe(topic, callback)
 
@@ -71,10 +72,10 @@ Unsubscribe from `topic`, `callback` will be fired when the broker acknowledges 
 
 #### client.publish(topic, payload, options, callback)
 
-Publish `payload` to `topic`, `callback` will be fired when the broker acknowledges the request. NB. if qos is 0 and a callback is provieded functionality is identical to the `subscribe` callback.
+Publish `payload` to `topic`, `callback` will be fired when the broker acknowledges the request. **NB.** if qos is 0 and a callback is provieded functionality is identical to the `subscribe` callback.
 
 `options` are optional and can specify any of the following:
-```js
+```
 {
     qos    : <optional> - default 0,
     retain : <optional> - deafult false,
@@ -82,11 +83,12 @@ Publish `payload` to `topic`, `callback` will be fired when the broker acknowled
 
 ```
 
+<br>
 The client emits the following events 
 
 - `'connect'`: client has connected to broker  
 - `'disconnect'`: client was disconnected from broker for whatever reason  
-- ´'message'`: client received an MQTT message  
+- `'message'`: client received an MQTT message  
 
 Callbacks can be attached to these events through `client.on` or `client.bind` and removed with `client.unbind`.
 
@@ -104,18 +106,20 @@ client.on('message', function handleMessage(topic, payload, details) {
 });
 ```
 
-- `payload` is defined as 
+- `payload` is either the UTF-8 encoded String in the message if parsed by Paho, or the payload as an ArrayBuffer
 - `details` is an object containing
 
-```js
+```
 {
-    topic     : /*  */, 
-    qos       : /*  */,
-    retained  : /*  */,
-    payload   : /*  */,
-    duplicate : /*  */,
+    topic     : /* String */, 
+    qos       : /* 0 | 1 | 2 */,
+    retained  : /* boolean  */,
+    payload   : /* payloadBytes */,
+    duplicate : /* boolean */,
 }
 ```
+
+The meaning of the fields are explained in the [Paho documentation](http://www.eclipse.org/paho/files/jsdoc/symbols/Paho.MQTT.Message.html).
 
 
 <br>
@@ -141,7 +145,7 @@ Roadmap & Changelog
 - [x] minfied build
 - [x] public release npm/bower
 
-Future
+**Future**
 
 - [ ] better example in README
 - [ ] optional logging support
