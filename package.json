@@ -8,12 +8,12 @@
     "mqtt-client.min.js"
   ],
   "scripts": {
-    "test": "electron-mocha --renderer --R spec --scripts paho/mqttws31.js,mqtt-client.js ./test/",
+    "test": "electron-mocha --renderer --R spec --preload paho/mqttws31.js --preload mqtt-client.js ./test/",
     "minify": "uglifyjs mqtt-client.js -o mqtt-client.min.js -c --m --screw-ie8",
     "lint": "eslint --fix -c config/eslint.conf mqtt-client.js; exit 0",
-    "precoverage-test": "mkdir -p coverage && istanbul instrument mqtt-client.js -o coverage/mqtt-client.instrumented.js",
-    "coverage-test": "istanbul cover electron-mocha -- --renderer --R spec --scripts paho/mqttws31.js,coverage/mqtt-client.instrumented.js ./test/ ./test/coverage/coverageReport.js",
-    "coverage-details": "istanbul report lcov && opn coverage/lcov-report/index.html",
+    "precoverage:test": "mkdir -p coverage && istanbul instrument mqtt-client.js -o coverage/mqtt-client.instrumented.js",
+    "coverage:test": "istanbul cover electron-mocha -- --renderer --R spec --preload paho/mqttws31.js --preload coverage/mqtt-client.instrumented.js ./test/ ./test/coverage/coverageReport.js",
+    "coverage:details": "istanbul report lcov && opn coverage/lcov-report/index.html",
     "ghp-deploy": "git subtree push --prefix demo origin gh-pages"
   },
   "repository": {
@@ -33,7 +33,7 @@
   "homepage": "https://github.com/orbitbot/web-mqtt-client#readme",
   "devDependencies": {
     "chai": "^3.5.0",
-    "electron-mocha": "orbitbot/electron-mocha",
+    "electron-mocha": "1.1.0",
     "eslint": "^2.3.0",
     "eslint-config-airbnb": "^6.1.0",
     "istanbul": "^0.4.2",

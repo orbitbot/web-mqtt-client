@@ -119,7 +119,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     var message = createMessage(topic, payload, options.qos, options.retain);
     if (callback) {
       if (message.qos < 1) {
-        setTimeout(function() { callback(); });
+        setTimeout(callback);
       } else {
         message.callback = callback;
         self.messageCache.push(message);

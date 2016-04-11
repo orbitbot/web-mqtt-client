@@ -125,6 +125,19 @@ The meaning of the fields are explained in the [Paho documentation](http://www.e
 Roadmap & Changelog
 -------------------
 
+**1.1.0**
+
+- [ ] test coverage x
+- [ ] optional logging support
+- [ ] integration tests against Mosca
+
+**1.0.1**
+
+- [ ] improve unit test coverage
+- [ ] fix publish API (call w/o payload, options, callback)
+- [ ] subscribe API (document callback, callback this reference)
+- [ ] unsubscribe API (document callback, callback this reference)
+
 **1.0.0**
 
 - [x] unit test setup
@@ -147,14 +160,12 @@ Roadmap & Changelog
 **Future**
 
 - [ ] better example in README
-- [ ] optional logging support
 - [ ] MQTT topic regex support
 - [ ] separate messages event API
 - [ ] extended connection lifecycle callbacks
 - [ ] reconnection callback
 - [ ] rewrite Paho Errors
 - [ ] proper linting config
-- [ ] integration tests against Mosca
 - [ ] test coverage x
 - [ ] filter subscription/unsubscription calls to broker if topic has other callbacks
 - [ ] filter sub/unsub is QoS-aware
