@@ -8,11 +8,11 @@ App.connect = function(args) {
 
   App.client
     .on('connect', function() {
-      console.info('connected to ' + App.client.broker.host + ':' + Appl.client.broker.port + ' as ' + App.client.broker.clientId);
+      console.info('connected to ' + App.client.broker.host + ':' + App.client.broker.port + ' as ' + App.client.broker.clientId);
       m.route('/connected');
     })
     .on('disconnect', function() {
-      console.info(App.client.broker.clientId + 'disconnected ');
+      console.info(App.client.broker.clientId + ' disconnected');
       App.subscriptions = [];
       m.route('/');
     })
@@ -38,7 +38,7 @@ App.connect = function(args) {
       if (error) {
         console.error('Error subscribing to ' + param.topic, error);
       } else {
-        console.info('subscribed to ' + topic + ' with QoS ' + granted);
+        console.info('subscribed to ' + param.topic + ' with QoS ' + param.granted);
         App.subscriptions.push({ topic : param.topic, qos : granted });
       }
       m.redraw();
