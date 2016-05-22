@@ -8,13 +8,16 @@ App.connect = function(args) {
 
   App.client
     .on('connect', function() {
+      console.info('connected to ' + App.client.broker.host + ':' + Appl.client.broker.port + ' as ' + App.client.broker.clientId);
       m.route('/connected');
     })
     .on('disconnect', function() {
+      console.info(App.client.broker.clientId + 'disconnected ');
       App.subscriptions = [];
       m.route('/');
     })
     .on('message', function(topic, payload, message) {
+      console.info('got message ' + topic + ' : ' + payload);
       App.messages.push({
         topic    : topic,
         payload  : payload,
@@ -31,23 +34,27 @@ App.connect = function(args) {
 
   App.disconnect  = App.client.disconnect;
   App.subscribe = function(param) {
-    App.client.subscribe(param.topic, param.qos, function(error, reply) {
-      if (error)
+    App.client.subscribe(param.topic, param.qos, function(error, granted) {
+      if (error) {
         console.error('Error subscribing to ' + param.topic, error);
-      else
-        App.subscriptions.push({ topic : param.topic, qos : reply.grantedQos[0] });
+      } else {
+        console.info('subscribed to ' + topic + ' with QoS ' + granted);
+        App.subscriptions.push({ topic : param.topic, qos : granted });
+      }
       m.redraw();
     });
   };
 
   App.unsubscribe = function(topic) {
     App.client.unsubscribe(topic, function(error, reply) {
-      if (error)
+      if (error) {
         console.error('Error unsubscribing from ' + topic, error);
-      else
+      } else {
+        console.info('unsubscribed from ' + topic);
         App.subscriptions = App.subscriptions.filter(function(elem) {
           return elem.topic !== topic;
         });
+      }
       m.redraw();
     });
   };
