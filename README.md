@@ -136,10 +136,16 @@ The meaning of the fields are explained in the [Paho documentation](http://www.e
 Roadmap & Changelog
 -------------------
 
+**1.2.0**
+
+- [ ] separate messages event API
+- [ ] MQTT topic regex support
+
 **1.1.0**
 
-- [ ] test coverage x
-- [ ] optional logging support
+- [ ] reconnection callback
+- [ ] extended connection lifecycle callbacks
+- ~~[ ] optional logging support~~ dropped, since it's currently easy to attach logging to callbacks if needed
 - [x] integration tests against Mosca
 
 **1.0.1**
@@ -171,10 +177,6 @@ Roadmap & Changelog
 **Future**
 
 - [ ] better example in README
-- [ ] MQTT topic regex support
-- [ ] separate messages event API
-- [ ] extended connection lifecycle callbacks
-- [ ] reconnection callback
 - [ ] rewrite Paho Errors
 - [ ] proper linting config
 - [ ] test coverage x
