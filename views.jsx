@@ -1,12 +1,7 @@
-// avoid m.prop usage -- https://gist.github.com/mindeavor/0bf02f1f21c72de9fb49
-m.setValue = function(obj, prop, callback) {
-  return m.withAttr('value', function(value) { obj[prop] = callback ? callback(value) : value });
+// avoid m.prop usage for data objects -- based on https://gist.github.com/mindeavor/0bf02f1f21c72de9fb49
+m.set = function(obj, prop, modify) {
+  return function(value) { obj[prop] = modify ? modify(value) : value };
 };
-
-m.setAttr = function(obj, prop, attr, callback) {
-  return m.withAttr(attr, function(value) { obj[prop] = callback ? callback(value) : value });
-}
-
 
 var ConnectForm = {
   controller : function(api, client) {
@@ -50,21 +45,21 @@ var ConnectForm = {
             <label for="hostInput">Host</label>
             <input class="u-full-width" type="text" placeholder="some.domain.tld" id="hostInput"
               value={ ctrl.props.host }
-              onchange={ m.setValue(ctrl.props, 'host') } />
+              onchange={ m.withAttr('value', m.set(ctrl.props, 'host')) } />
           </div>
 
           <div class="two columns">
             <label for="portInput">Port</label>
             <input class="u-full-width" type="text" placeholder="8080" id="portInput"
               value={ ctrl.props.port }
-              onchange={ m.setValue(ctrl.props, 'port') } />
+              onchange={ m.withAttr('value', m.set(ctrl.props, 'port')) } />
           </div>
 
           <div class="one column">
             <label for="sslInput">SSL</label>
             <input type="checkbox" id="sslInput"
               checked={ ctrl.props.ssl }
-              onclick={ m.setAttr(ctrl.props, 'ssl', 'checked') } />
+              onclick={ m.withAttr('checked', m.set(ctrl.props, 'ssl')) } />
             <label for="sslInput"></label>
           </div>
 
@@ -72,7 +67,7 @@ var ConnectForm = {
             <label for="cleanInput">Clean session</label>
             <input type="checkbox" id="cleanInput"
               checked={ ctrl.props.clean }
-              onclick={ m.setAttr(ctrl.props, 'clean', 'checked') } />
+              onclick={ m.withAttr('checked', m.set(ctrl.props, 'clean')) } />
             <label for="cleanInput"></label>
           </div>
         </div>
@@ -82,28 +77,28 @@ var ConnectForm = {
             <label for="clientInput">ClientId</label>
             <input class="u-full-width" type="text" id="clientInput"
               value={ ctrl.props.clientId }
-              onchange={ m.setValue(ctrl.props, 'clientId') } />
+              onchange={ m.withAttr('value', m.set(ctrl.props, 'clientId')) } />
           </div>
 
           <div class="two columns">
             <label for="keepaliveInput">Keepalive</label>
             <input class="u-full-width" type="text" placeholder="30" id="keepaliveInput"
               value={ ctrl.props.keepalive }
-              onchange={ m.setValue(ctrl.props, 'keepalive') } />
+              onchange={ m.withAttr('value', m.set(ctrl.props, 'keepalive')) } />
           </div>
 
           <div class="three columns">
             <label for="unameInput">Username</label>
             <input class="u-full-width" type="text" placeholder="" id="unameInput"
               value={ ctrl.props.username }
-              onchange={ m.setValue(ctrl.props, 'username') } />
+              onchange={ m.withAttr('value', m.set(ctrl.props, 'username')) } />
           </div>
 
           <div class="three columns">
             <label for="pwdInput">Password</label>
             <input class="u-full-width" type="text" placeholder="" id="pwdInput"
               value={ ctrl.props.password }
-              onchange={ m.setValue(ctrl.props, 'password') } />
+              onchange={ m.withAttr('value', m.set(ctrl.props, 'password')) } />
           </div>
         </div>
 
@@ -112,13 +107,13 @@ var ConnectForm = {
             <label for="pwdInput">Last-will topic</label>
             <input class="u-full-width" type="text" id="pwdInput"
               value={ ctrl.props.will.topic }
-              onchange={ m.setValue(ctrl.props.will, 'topic') } />
+              onchange={ m.withAttr('value', m.set(ctrl.props.will, 'topic')) } />
           </div>
 
           <div class="two columns">
             <label for="qosInput">QoS</label>
             <select class="u-full-width" id="qosInput"
-              onchange={ m.setValue(ctrl.props.will, 'qos', Number) }>
+              onchange={ m.withAttr('value', m.set(ctrl.props.will, 'qos', Number)) }>
                 {[0, 1, 2].map(function(el) {
                   return (<option value={ el } selected={ el === ctrl.props.will.qos }>{ el }</option>);
                 })}
@@ -129,7 +124,7 @@ var ConnectForm = {
             <label for="lwtRetainInput">Retain</label>
             <input type="checkbox" id="lwtRetainInput"
               checked={ ctrl.props.will.retain }
-              onclick={ m.setAttr(ctrl.props.will, 'retain', 'checked') } />
+              onclick={ m.withAttr('checked', m.set(ctrl.props.will, 'retain')) } />
             <label for="lwtRetainInput"></label>
           </div>
         </div>
@@ -137,7 +132,7 @@ var ConnectForm = {
         <label for="lwtMessage">Last-will Message</label>
         <textarea class="u-full-width" id="lwtMessage"
           value={ ctrl.props.will.payload }
-          onchange={ m.setValue(ctrl.props.will, 'payload') }>
+          onchange={ m.withAttr('value', m.set(ctrl.props.will, 'payload')) }>
         </textarea>
 
         <button class="button" type="button" onclick={ ctrl.clear }>Clear</button>
@@ -196,13 +191,13 @@ var SubscriptionForm = {
             <label for="topicInput">Topic</label>
             <input class="u-full-width" type="text" id="hostInput"
               value={ ctrl.props.topic }
-              onchange={ m.setValue(ctrl.props, 'topic') } />
+              onchange={ m.withAttr('value', m.set(ctrl.props, 'topic')) } />
           </div>
 
           <div class="two columns">
             <label for="qosInput">QoS</label>
             <select class="u-full-width" id="qosInput"
-              onchange={ m.setValue(ctrl.props, 'qos') }>
+              onchange={ m.withAttr('value', m.set(ctrl.props, 'qos', Number)) }>
                 {[0, 1, 2].map(function(el) {
                   return (<option value={ el }>{ el }</option>);
                 })}
@@ -215,7 +210,7 @@ var SubscriptionForm = {
               Subscribe
             </button>
           </div>
-        </div>                    
+        </div>
       </form>
     );
   }
@@ -234,7 +229,7 @@ var SubscriptionList = {
           </tr>
         </thead>
         <tbody>{
-          app.subscriptions.map(function(el) {          
+          app.subscriptions.map(function(el) {
             return (<tr>
                       <td>{ el.topic }</td>
                       <td>{ el.qos }</td>
@@ -273,13 +268,13 @@ var PublishForm = {
             <label for="pwdInput">Topic</label>
             <input class="u-full-width" type="text" id="pwdInput"
               value={ ctrl.msg.topic }
-              onchange={ m.setValue(ctrl.msg, 'topic') } />
+              onchange={ m.withAttr('value', m.set(ctrl.msg, 'topic')) } />
           </div>
 
           <div class="two columns">
             <label for="qosInput">QoS</label>
             <select class="u-full-width" id="qosInput"
-              onchange={ m.setValue(ctrl.msg, 'qos') }>
+              onchange={ m.withAttr('value', m.set(ctrl.msg, 'qos', Number)) }>
                 {[0, 1, 2].map(function(el) {
                   return (<option value={ el }>{ el }</option>);
                 })}
@@ -290,7 +285,7 @@ var PublishForm = {
             <label for="lwtRetainInput">Retain</label>
             <input type="checkbox" id="lwtRetainInput"
               checked={ ctrl.msg.retain }
-              onclick={ m.setAttr(ctrl.msg, 'retain', 'checked') } />
+              onclick={ m.withAttr('checked', m.set(ctrl.msg, 'retain')) } />
             <label for="lwtRetainInput"></label>
           </div>
 
@@ -302,7 +297,7 @@ var PublishForm = {
         <label for="message">Message</label>
         <textarea class="u-full-width" id="message"
           value={ ctrl.msg.payload }
-          onchange={ m.setValue(ctrl.msg, 'payload') }>
+          onchange={ m.withAttr('value', m.set(ctrl.msg, 'payload')) }>
         </textarea>
       </form>
     );
@@ -326,6 +321,6 @@ var Messages = {
             );
         })
       }</div>
-    );    
+    );
   },
 };
