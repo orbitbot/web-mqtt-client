@@ -1,12 +1,7 @@
-// avoid m.prop usage -- https://gist.github.com/mindeavor/0bf02f1f21c72de9fb49
-m.setValue = function(obj, prop, callback) {
-  return m.withAttr('value', function(value) { obj[prop] = callback ? callback(value) : value });
+// avoid m.prop usage for data objects -- based on https://gist.github.com/mindeavor/0bf02f1f21c72de9fb49
+m.set = function(obj, prop, modify) {
+  return function(value) { obj[prop] = modify ? modify(value) : value };
 };
-
-m.setAttr = function(obj, prop, attr, callback) {
-  return m.withAttr(attr, function(value) { obj[prop] = callback ? callback(value) : value });
-}
-
 
 var ConnectForm = {
   controller : function(api, client) {
@@ -50,21 +45,21 @@ var ConnectForm = {
             {tag: "label", attrs: {for:"hostInput"}, children: ["Host"]}, 
             {tag: "input", attrs: {class:"u-full-width", type:"text", placeholder:"some.domain.tld", id:"hostInput", 
               value: ctrl.props.host, 
-              onchange: m.setValue(ctrl.props, 'host') }}
+              onchange: m.withAttr('value', m.set(ctrl.props, 'host')) }}
           ]}, 
 
           {tag: "div", attrs: {class:"two columns"}, children: [
             {tag: "label", attrs: {for:"portInput"}, children: ["Port"]}, 
             {tag: "input", attrs: {class:"u-full-width", type:"text", placeholder:"8080", id:"portInput", 
               value: ctrl.props.port, 
-              onchange: m.setValue(ctrl.props, 'port') }}
+              onchange: m.withAttr('value', m.set(ctrl.props, 'port')) }}
           ]}, 
 
           {tag: "div", attrs: {class:"one column"}, children: [
             {tag: "label", attrs: {for:"sslInput"}, children: ["SSL"]}, 
             {tag: "input", attrs: {type:"checkbox", id:"sslInput", 
               checked: ctrl.props.ssl, 
-              onclick: m.setAttr(ctrl.props, 'ssl', 'checked') }}, 
+              onclick: m.withAttr('checked', m.set(ctrl.props, 'ssl')) }}, 
             {tag: "label", attrs: {for:"sslInput"}}
           ]}, 
 
@@ -72,7 +67,7 @@ var ConnectForm = {
             {tag: "label", attrs: {for:"cleanInput"}, children: ["Clean session"]}, 
             {tag: "input", attrs: {type:"checkbox", id:"cleanInput", 
               checked: ctrl.props.clean, 
-              onclick: m.setAttr(ctrl.props, 'clean', 'checked') }}, 
+              onclick: m.withAttr('checked', m.set(ctrl.props, 'clean')) }}, 
             {tag: "label", attrs: {for:"cleanInput"}}
           ]}
         ]}, 
@@ -82,28 +77,28 @@ var ConnectForm = {
             {tag: "label", attrs: {for:"clientInput"}, children: ["ClientId"]}, 
             {tag: "input", attrs: {class:"u-full-width", type:"text", id:"clientInput", 
               value: ctrl.props.clientId, 
-              onchange: m.setValue(ctrl.props, 'clientId') }}
+              onchange: m.withAttr('value', m.set(ctrl.props, 'clientId')) }}
           ]}, 
 
           {tag: "div", attrs: {class:"two columns"}, children: [
             {tag: "label", attrs: {for:"keepaliveInput"}, children: ["Keepalive"]}, 
             {tag: "input", attrs: {class:"u-full-width", type:"text", placeholder:"30", id:"keepaliveInput", 
               value: ctrl.props.keepalive, 
-              onchange: m.setValue(ctrl.props, 'keepalive') }}
+              onchange: m.withAttr('value', m.set(ctrl.props, 'keepalive')) }}
           ]}, 
 
           {tag: "div", attrs: {class:"three columns"}, children: [
             {tag: "label", attrs: {for:"unameInput"}, children: ["Username"]}, 
             {tag: "input", attrs: {class:"u-full-width", type:"text", placeholder:"", id:"unameInput", 
               value: ctrl.props.username, 
-              onchange: m.setValue(ctrl.props, 'username') }}
+              onchange: m.withAttr('value', m.set(ctrl.props, 'username')) }}
           ]}, 
 
           {tag: "div", attrs: {class:"three columns"}, children: [
             {tag: "label", attrs: {for:"pwdInput"}, children: ["Password"]}, 
             {tag: "input", attrs: {class:"u-full-width", type:"text", placeholder:"", id:"pwdInput", 
               value: ctrl.props.password, 
-              onchange: m.setValue(ctrl.props, 'password') }}
+              onchange: m.withAttr('value', m.set(ctrl.props, 'password')) }}
           ]}
         ]}, 
 
@@ -112,13 +107,13 @@ var ConnectForm = {
             {tag: "label", attrs: {for:"pwdInput"}, children: ["Last-will topic"]}, 
             {tag: "input", attrs: {class:"u-full-width", type:"text", id:"pwdInput", 
               value: ctrl.props.will.topic, 
-              onchange: m.setValue(ctrl.props.will, 'topic') }}
+              onchange: m.withAttr('value', m.set(ctrl.props.will, 'topic')) }}
           ]}, 
 
           {tag: "div", attrs: {class:"two columns"}, children: [
             {tag: "label", attrs: {for:"qosInput"}, children: ["QoS"]}, 
             {tag: "select", attrs: {class:"u-full-width", id:"qosInput", 
-              onchange: m.setValue(ctrl.props.will, 'qos', Number) }, children: [
+              onchange: m.withAttr('value', m.set(ctrl.props.will, 'qos', Number)) }, children: [
                 [0, 1, 2].map(function(el) {
                   return ({tag: "option", attrs: {value: el, selected: el === ctrl.props.will.qos}, children: [ el ]});
                 })
@@ -129,7 +124,7 @@ var ConnectForm = {
             {tag: "label", attrs: {for:"lwtRetainInput"}, children: ["Retain"]}, 
             {tag: "input", attrs: {type:"checkbox", id:"lwtRetainInput", 
               checked: ctrl.props.will.retain, 
-              onclick: m.setAttr(ctrl.props.will, 'retain', 'checked') }}, 
+              onclick: m.withAttr('checked', m.set(ctrl.props.will, 'retain')) }}, 
             {tag: "label", attrs: {for:"lwtRetainInput"}}
           ]}
         ]}, 
@@ -137,7 +132,7 @@ var ConnectForm = {
         {tag: "label", attrs: {for:"lwtMessage"}, children: ["Last-will Message"]}, 
         {tag: "textarea", attrs: {class:"u-full-width", id:"lwtMessage", 
           value: ctrl.props.will.payload, 
-          onchange: m.setValue(ctrl.props.will, 'payload') }
+          onchange: m.withAttr('value', m.set(ctrl.props.will, 'payload')) }
         }, 
 
         {tag: "button", attrs: {class:"button", type:"button", onclick: ctrl.clear}, children: ["Clear"]}
@@ -196,13 +191,13 @@ var SubscriptionForm = {
             {tag: "label", attrs: {for:"topicInput"}, children: ["Topic"]}, 
             {tag: "input", attrs: {class:"u-full-width", type:"text", id:"hostInput", 
               value: ctrl.props.topic, 
-              onchange: m.setValue(ctrl.props, 'topic') }}
+              onchange: m.withAttr('value', m.set(ctrl.props, 'topic')) }}
           ]}, 
 
           {tag: "div", attrs: {class:"two columns"}, children: [
             {tag: "label", attrs: {for:"qosInput"}, children: ["QoS"]}, 
             {tag: "select", attrs: {class:"u-full-width", id:"qosInput", 
-              onchange: m.setValue(ctrl.props, 'qos') }, children: [
+              onchange: m.withAttr('value', m.set(ctrl.props, 'qos', Number)) }, children: [
                 [0, 1, 2].map(function(el) {
                   return ({tag: "option", attrs: {value: el }, children: [ el ]});
                 })
@@ -234,7 +229,7 @@ var SubscriptionList = {
           ]}
         ]}, 
         {tag: "tbody", attrs: {}, children: [
-          app.subscriptions.map(function(el) {          
+          app.subscriptions.map(function(el) {
             return ({tag: "tr", attrs: {}, children: [
                       {tag: "td", attrs: {}, children: [ el.topic]}, 
                       {tag: "td", attrs: {}, children: [ el.qos]}, 
@@ -273,13 +268,13 @@ var PublishForm = {
             {tag: "label", attrs: {for:"pwdInput"}, children: ["Topic"]}, 
             {tag: "input", attrs: {class:"u-full-width", type:"text", id:"pwdInput", 
               value: ctrl.msg.topic, 
-              onchange: m.setValue(ctrl.msg, 'topic') }}
+              onchange: m.withAttr('value', m.set(ctrl.msg, 'topic')) }}
           ]}, 
 
           {tag: "div", attrs: {class:"two columns"}, children: [
             {tag: "label", attrs: {for:"qosInput"}, children: ["QoS"]}, 
             {tag: "select", attrs: {class:"u-full-width", id:"qosInput", 
-              onchange: m.setValue(ctrl.msg, 'qos') }, children: [
+              onchange: m.withAttr('value', m.set(ctrl.msg, 'qos', Number)) }, children: [
                 [0, 1, 2].map(function(el) {
                   return ({tag: "option", attrs: {value: el }, children: [ el ]});
                 })
@@ -290,7 +285,7 @@ var PublishForm = {
             {tag: "label", attrs: {for:"lwtRetainInput"}, children: ["Retain"]}, 
             {tag: "input", attrs: {type:"checkbox", id:"lwtRetainInput", 
               checked: ctrl.msg.retain, 
-              onclick: m.setAttr(ctrl.msg, 'retain', 'checked') }}, 
+              onclick: m.withAttr('checked', m.set(ctrl.msg, 'retain')) }}, 
             {tag: "label", attrs: {for:"lwtRetainInput"}}
           ]}, 
 
@@ -302,7 +297,7 @@ var PublishForm = {
         {tag: "label", attrs: {for:"message"}, children: ["Message"]}, 
         {tag: "textarea", attrs: {class:"u-full-width", id:"message", 
           value: ctrl.msg.payload, 
-          onchange: m.setValue(ctrl.msg, 'payload') }
+          onchange: m.withAttr('value', m.set(ctrl.msg, 'payload')) }
         }
       ]}
     );
@@ -326,6 +321,6 @@ var Messages = {
             );
         })
       ]}
-    );    
+    );
   },
 };
