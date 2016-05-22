@@ -35,7 +35,7 @@ An MQTT client is intialized with the call to `new MqttClient`, which accepts th
 
 ```js
 var client = new MqttClient({
-    host        : <required>, 
+    host        : <required>,
     port        : <required>,
     clientId    : <optional> - will be randomly generated if not provided,
     timeout     : <optional> - default 10,
@@ -46,7 +46,7 @@ var client = new MqttClient({
     ssl         : <optional> - default false,
     clean       : <optional> - default true,
     will        : {
-        topic   : <required>, 
+        topic   : <required>,
         payload : <optional>,
         qos     : <optional> - default 0,
         retain  : <optional> - default false
@@ -66,9 +66,20 @@ Connect and disconnect to/from the broker specified when this client was initial
 
 Subscribe to `topic` with `qos`, and optionally attach a callback to be fired when subscription is acknowledged. **NB.** if qos is 0 and a callback is provided, the callback will essentially only mean that the subscription request was delivered to the Paho library.
 
+The callback function gets the following parameters
+
+```
+function(err, granted) { /* ... */ }
+```
+
+where `err` is the error object returned by Paho, and `granted` is the QoS level (0,1 or 2) granted by the broker.
+
+
 #### client.unsubscribe(topic, callback)
 
 Unsubscribe from `topic`, `callback` will be fired when the broker acknowledges the request.
+
+The callback function gets a single error parameter if something went wrong, containing the error object returned by Paho, eg. `function(err) { }`.
 
 #### client.publish(topic, payload, options, callback)
 
@@ -83,11 +94,11 @@ Publish `payload` to `topic`, `callback` will be fired when the broker acknowled
 ```
 
 <br>
-The client emits the following events 
+The client emits the following events
 
-- `'connect'`: client has connected to broker  
-- `'disconnect'`: client was disconnected from broker for whatever reason  
-- `'message'`: client received an MQTT message  
+- `'connect'`: client has connected to broker
+- `'disconnect'`: client was disconnected from broker for whatever reason
+- `'message'`: client received an MQTT message
 
 Callbacks can be attached to these events through `client.on` or `client.bind` and removed with `client.unbind`.
 
@@ -101,7 +112,7 @@ The callback attached to the `message` event will have the following parameters
 
 ```js
 client.on('message', function handleMessage(topic, payload, details) {
-  // ..    
+  // ..
 });
 ```
 
@@ -110,7 +121,7 @@ client.on('message', function handleMessage(topic, payload, details) {
 
 ```js
 {
-    topic     : /* String */, 
+    topic     : /* String */,
     qos       : /* 0 | 1 | 2 */,
     retained  : /* boolean  */,
     payload   : /* payloadBytes */,
@@ -129,14 +140,14 @@ Roadmap & Changelog
 
 - [ ] test coverage x
 - [ ] optional logging support
-- [ ] integration tests against Mosca
+- [x] integration tests against Mosca
 
 **1.0.1**
 
-- [ ] improve unit test coverage
-- [ ] fix publish API (call w/o payload, options, callback)
-- [ ] subscribe API (document callback, callback this reference)
-- [ ] unsubscribe API (document callback, callback this reference)
+- [x] improve test coverage
+- [x] fix publish API (call w/o payload, options, callback)
+- [x] subscribe API (document callback, callback this reference)
+- [x] unsubscribe API (document callback, callback this reference)
 
 **1.0.0**
 

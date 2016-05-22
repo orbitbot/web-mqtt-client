@@ -5,7 +5,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     var message = new Paho.MQTT.Message(payload);
     message.destinationName = topic;
     message.qos             = Number(qos) || 0;
-    message.retain          = retain !== undefined ? retain : false;
+    message.retain          = !!retain;
 
     return message;
   };
@@ -99,24 +99,27 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
   };
 
   self.subscribe = function(topic, qos, callback) {
+    if (arguments.length === 2 && typeof arguments[1] === 'function')
+      callback = qos;
+
     self.client.subscribe(topic, callback ? {
       qos       : Number(qos) || 0,
       timeout   : 15,
-      onSuccess : callback.bind(self, null),
-      onFailure : callback.bind(),
+      onSuccess : function(granted) { callback.call(self, undefined, granted.grantedQos[0]); },
+      onFailure : callback.bind(self),
     } : {});
   };
 
   self.unsubscribe = function(topic, callback) {
     self.client.unsubscribe(topic, callback ? {
       timeout   : 15,
-      onSuccess : callback.bind(self, null),
-      onFailure : callback.bind(),
+      onSuccess : callback.bind(self, undefined),
+      onFailure : callback.bind(self),
     } : {});
   };
 
   self.publish = function(topic, payload, options, callback) {
-    var message = createMessage(topic, payload, options.qos, options.retain);
+    var message = createMessage(topic, payload, options && options.qos, options && options.retain);
     if (callback) {
       if (message.qos < 1) {
         setTimeout(callback);

@@ -9,4 +9,4 @@ before_install:
   - npm install -g electron-prebuilt
 
 script:
-  - npm run coverage-test
+  - npm run coverage:test

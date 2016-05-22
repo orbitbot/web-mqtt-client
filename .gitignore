@@ -2,3 +2,4 @@
 node_modules
 demo/node_modules
 coverage/
+*npm-debug.log

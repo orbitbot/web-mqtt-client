@@ -63,7 +63,7 @@ describe('MQTT Client', function() {
     });
   });
 
-  it('supports MQTT API', function() {
+  it('supports MQTT client API', function() {
     assert.isFunction(client.connect, 'connect');
     assert.isFunction(client.disconnect, 'disconnect');
     assert.isFunction(client.publish, 'publish');
