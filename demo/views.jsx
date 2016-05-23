@@ -17,6 +17,7 @@ var ConnectForm = {
       clientId  : '',
       username  : '',
       password  : '',
+      reconnect : 0,
       will : {
         topic   : '',
         qos     : 0,
@@ -63,12 +64,18 @@ var ConnectForm = {
             <label for="sslInput"></label>
           </div>
 
-          <div class="three columns">
+          <div class="two columns">
             <label for="cleanInput">Clean session</label>
             <input type="checkbox" id="cleanInput"
               checked={ ctrl.props.clean }
               onclick={ m.withAttr('checked', m.set(ctrl.props, 'clean')) } />
             <label for="cleanInput"></label>
+          </div>
+          <div class="one column">
+            <label for="reconnectInput">Reconnect</label>
+            <input class="u-full-width" type="text" placeholder="0" id="reconnectInput"
+              value={ ctrl.props.reconnect }
+              onchange={ m.withAttr('value', m.set(ctrl.props, 'reconnect')) } />
           </div>
         </div>
 

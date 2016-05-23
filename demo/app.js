@@ -16,8 +16,10 @@ App.connect = function(args) {
       App.subscriptions = [];
       m.route('/');
     })
+    .on('connecting', console.info.bind(console, 'connecting to ' + App.client.broker.host + ':' + App.client.broker.port))
+    .on('offline', console.info.bind(console, App.client.broker.clientId + ' is offline'))
     .on('message', function(topic, payload, message) {
-      console.info('got message ' + topic + ' : ' + payload);
+      console.log('got message ' + topic + ' : ' + payload);
       App.messages.push({
         topic    : topic,
         payload  : payload,

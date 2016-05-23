@@ -17,6 +17,7 @@ var ConnectForm = {
       clientId  : '',
       username  : '',
       password  : '',
+      reconnect : 0,
       will : {
         topic   : '',
         qos     : 0,
@@ -63,12 +64,18 @@ var ConnectForm = {
             {tag: "label", attrs: {for:"sslInput"}}
           ]}, 
 
-          {tag: "div", attrs: {class:"three columns"}, children: [
+          {tag: "div", attrs: {class:"two columns"}, children: [
             {tag: "label", attrs: {for:"cleanInput"}, children: ["Clean session"]}, 
             {tag: "input", attrs: {type:"checkbox", id:"cleanInput", 
               checked: ctrl.props.clean, 
               onclick: m.withAttr('checked', m.set(ctrl.props, 'clean')) }}, 
             {tag: "label", attrs: {for:"cleanInput"}}
+          ]}, 
+          {tag: "div", attrs: {class:"one column"}, children: [
+            {tag: "label", attrs: {for:"reconnectInput"}, children: ["Reconnect"]}, 
+            {tag: "input", attrs: {class:"u-full-width", type:"text", placeholder:"0", id:"reconnectInput", 
+              value: ctrl.props.reconnect, 
+              onchange: m.withAttr('value', m.set(ctrl.props, 'reconnect')) }}
           ]}
         ]}, 
 
