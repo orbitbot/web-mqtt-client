@@ -27,6 +27,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     cleanSession      : (args.clean !== undefined) ? args.clean : true,
     willMessage       : (args.will && args.will.topic.length) ? args.will : undefined,
   });
+  self.reconnect = args.reconnect;
 
   self.emitter = {
     events : {},
@@ -57,6 +58,13 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
   self.on     = self.emitter.bind;
   self.bind   = self.emitter.bind;
   self.unbind = self.emitter.unbind;
+  self.once   = function(event, func) {
+    self.on(event, function handle() {
+      func.apply(self, slice.call(arguments));
+      self.unbind(event, handle);
+    });
+    return self;
+  };
 
   self.client = new Paho.MQTT.Client(self.broker.host, self.broker.port, self.broker.clientId);
   self.client.onConnectionLost = self.emitter.trigger.bind(self, 'disconnect');
@@ -75,9 +83,21 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     });
   };
 
+  function onDisconnect() {
+    self.connected = false;
+    if (self.reconnect) {
+      setTimeout(function() {
+        self.unbind('disconnect', onDisconnect);
+        self.connect();
+      }, self.reconnect);
+    } else {
+      self.emitter.trigger('offline');
+    }
+  }
+
   self.connect = function() {
-    self.on('connect', function() { self.connected = true; });
-    self.on('disconnect', function() { self.connected = false; });
+    self.once('connect', function() { self.connected = true; });
+    self.once('disconnect', onDisconnect);
 
     var config = compact(self.options);
     config.onSuccess = self.emitter.trigger.bind(self, 'connect');
@@ -89,13 +109,16 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
                                          config.willMessage.retain);
     }
 
+    self.emitter.trigger('connecting');
     self.client.connect(config);
 
     return self;
   };
 
   self.disconnect = function() {
+    self.unbind('disconnect', onDisconnect);
     self.client.disconnect();
+    self.emitter.trigger('offline');
   };
 
   self.subscribe = function(topic, qos, callback) {
