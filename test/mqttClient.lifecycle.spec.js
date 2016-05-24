@@ -35,9 +35,80 @@ describe('MQTT Client - connection lifecycle', function() {
     assert.isFunction(params.onFailure, 'onFailure');
   });
 
-  it('fires disconnect with bad configuration', function (done) {
+  it('fires lifecycle events on a successful connection', function (done) {
+    var config;
+    var stub = sinon.stub(client.client, 'connect', function(args) { config = args; });
+
     client
-      .on('disconnect', function() { done(); })
+      .on('connecting', function() { config.onSuccess(); })
+      .on('connect', done)
       .connect();
   });
+
+  it('fires lifecycle events on a failed connection', function(done) {
+    var config;
+    var disconnectSpy = sinon.spy();
+    var stub = sinon.stub(client.client, 'connect', function(args) { config = args; });
+
+    client
+      .on('connecting', function() { config.onFailure(); })
+      .on('disconnect', disconnectSpy)
+      .on('offline', function() {
+        disconnectSpy.calledOnce.should.equal(true);
+        done();
+      })
+      .connect();
+  });
+
+  it('goes offline if disconnect is called', function(done) {
+    var config;
+    var disconnectSpy = sinon.spy();
+    var stub = sinon.stub(client.client, 'connect', function(args) { config = args; });
+    client.client.disconnect = sinon.spy();
+
+    client
+      .on('connecting', function() { config.onSuccess(); })
+      .on('connect', function() {
+        client.disconnect();
+      })
+      .on('disconnect', disconnectSpy)
+      .on('offline', function() {
+        client.client.disconnect.calledOnce.should.equal(true);
+        disconnectSpy.calledOnce.should.equal(true);
+        done();
+      })
+      .connect();
+  });
+
+  describe('automatic reconnection', function() {
+
+    before(function() {
+      clientParams.reconnect = 5;
+    });
+
+    after(function() {
+      delete clientParams.reconnect;
+    })
+
+    it('automatically reconnects if a reconnection interval is passed', function(done) {
+      var config;
+      var calledOnce = false;
+      var stub = sinon.stub(client.client, 'connect', function(args) { config = args; });
+
+      client
+        .on('connecting', function() {
+          if (calledOnce) {
+            done();
+          } else {
+            calledOnce = true;
+            config.onSuccess();
+          }
+        })
+        .on('connect', function() {
+          client.emitter.trigger('disconnect');
+        })
+        .connect();
+    });
+  })
+
 });

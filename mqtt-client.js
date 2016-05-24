@@ -109,8 +109,8 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
                                          config.willMessage.retain);
     }
 
-    self.emitter.trigger('connecting');
     self.client.connect(config);
+    self.emitter.trigger('connecting');
 
     return self;
   };
@@ -118,6 +118,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
   self.disconnect = function() {
     self.unbind('disconnect', onDisconnect);
     self.client.disconnect();
+    self.emitter.trigger('disconnect');
     self.emitter.trigger('offline');
   };
 
