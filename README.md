@@ -5,11 +5,8 @@
 
 An example of this library in use is available on [`gh-pages`](https://orbitbot.github.io/web-mqtt-client), source code and resources for the example under the `demo/` folder.
 
-The event emitter implementations in this project are based on [microevents.js](https://github.com/jeromeetienne/microevent.js).
-
 <br>
-Installation
-------------
+### Installation
 
 ```sh
 $ npm install web-mqtt-client
@@ -26,66 +23,95 @@ In addition to `mqtt-client.js`, you will also need to add `mqttws31.js` from [E
 `mqtt-client.js` expects the globals from Eclipse Paho to be available when initialized, so the order of evaluation matters. When the scripts have been evaluated, `web-mqtt-client` is available through the `MqttClient` global.
 
 <br>
-API
----
+### Usage
 
-#### MqttClient
+An MQTT client is intialized with the call to `new MqttClient` with a configuration object. The configuration object is required to contain `host` and `port`, but accepts multiple other values:
 
-An MQTT client is intialized with the call to `new MqttClient`, which accepts the following options:
+| Parameter     | Mandatory | Type          | Default   |
+|:--------------|:----------|:--------------|:----------|
+| `host`        | required  | String        |           |
+| `port`        | required  | Number        |           |
+| `clientId`    | optional  | String        | generated |
+| `timeout`     | optional  | Number        | 10        |
+| `keepalive`   | optional  | Number        | 30        |
+| `mqttVersion` | optional  | Number [3,4]  |           |
+| `username`    | optional  | String        |           |
+| `password`    | optional  | String        |           |
+| `ssl`         | optional  | boolean       |           |
+| `clean`       | optional  | boolean       |           |
+| `will`        | optional  | Object        |           |
+| `reconnect`   | optional  | Number        | undefined |
+
+`reconnect` is the time to wait in milliseconds before trying to connect if a client loses its connection to the broker. If not defined, automatic reconnection is disabled.
+
+Some further details for the parameters can be found in the [Paho documentation](http://www.eclipse.org/paho/files/jsdoc/symbols/Paho.MQTT.Client.html).
+
+Example:
 
 ```js
 var client = new MqttClient({
-    host        : <required>,
-    port        : <required>,
-    clientId    : <optional> - will be randomly generated if not provided,
-    timeout     : <optional> - default 10,
-    keepalive   : <optional> - default 30,
-    mqttVersion : <optional>,
-    userName    : <optional>,
-    password    : <optional>,
-    ssl         : <optional> - default false,
-    clean       : <optional> - default true,
-    will        : {
-        topic   : <required>,
-        payload : <optional>,
-        qos     : <optional> - default 0,
-        retain  : <optional> - default false
-    }
+  host : 'some.domain.tld/mqtt',
+  port : 5678,
+  will : {
+    topic   : 'farewells',
+    payload : 'So long!',
+  }
 });
 ```
 
+The `will` object is specified as follows and has the typical MQTT message attributes
+
+| field     | Mandatory | Type                  | Default   |
+|:----------|:----------|:----------------------|:----------|
+| `topic`   | required  | String                |           |
+| `payload` | required  | String or ArrayBuffer |           |
+| `qos`     | optional  | Number [0,1,2]        | 0         |
+| `retain`  | optional  | boolean               | false     |
+
 <br>
-The client exposes the following methods
 
-#### client.connect()
-#### client.disconnect()
+##### Client API
 
-Connect and disconnect to/from the broker specified when this client was initialized. `client.connected` tracks the current state.
+A client `var client = new MqttClient(opts)` initialized as above will have
 
-#### client.subscribe(topic, qos, callback)
+###### Fields:
 
-Subscribe to `topic` with `qos`, and optionally attach a callback to be fired when subscription is acknowledged. **NB.** if qos is 0 and a callback is provided, the callback will essentially only mean that the subscription request was delivered to the Paho library.
+**`client.connected` : `boolean`**
 
-The callback function gets the following parameters
+Simplified connection state, ie. `true` if connected or `false` otherwise. If you need more detailed connection state tracking, this can be implemented by attaching callbacks to connection lifecycle events (see below).
 
-```
-function(err, granted) { /* ... */ }
-```
+<br>
 
-where `err` is the error object returned by Paho, and `granted` is the QoS level (0,1 or 2) granted by the broker.
+###### Methods:
+
+**`client.connect() ⇒ client`**
+
+Connect client to the broker specified in the configuration object.
+
+**`client.disconnect() ⇒ undefined`**
+
+Disconnect from the currently connected broker.
+
+**`client.subscribe(topic, function callback(error, granted) { }) ⇒ undefined`**
+
+**`client.subscribe(topic, qos, function callback(error, granted) { }) ⇒ undefined`**
+
+Subscribe to `topic`. `qos` and `callback` are optional, if two parameters are used the second one is assumed to be a callback function and the default QoS 0 is used. Note that if QoS 0 is passed, the broker does not actually acknowledge receiving the subscription message, so the callback firing essentially only means that the Paho library has processed the function call.
+
+The callback function parameter `error` is the error object returned by Paho, and `granted` is the QoS level (0,1 or 2) granted by the broker.
 
 
-#### client.unsubscribe(topic, callback)
+**`client.unsubscribe(topic, function callback (error) { }) ⇒ undefined`**
 
-Unsubscribe from `topic`, `callback` will be fired when the broker acknowledges the request.
+Unsubscribe from `topic`. The optional `callback` will be fired when the broker acknowledges the request.
 
-The callback function gets a single error parameter if something went wrong, containing the error object returned by Paho, eg. `function(err) { }`.
+The callback function gets a single error parameter if something went wrong, containing the error object returned by Paho.
 
-#### client.publish(topic, payload, options, callback)
+**`client.publish(topic, payload, options, callback) ⇒ undefined`**
 
-Publish `payload` to `topic`, `callback` will be fired when the broker acknowledges the request. **NB.** if qos is 0 and a callback is provieded functionality is identical to the `subscribe` callback.
+Publish `payload` to `topic`, `callback` will be fired when the broker acknowledges the request. **NB.** if qos is 0 and a callback is provieded functionality is identical to the `subscribe` callback. The callback getting triggered may also be broker-dependant, so verify the functionality before depending on a callback being fired.
 
-`options` are optional and can specify any of the following:
+`options` are optional and can specify the following:
 ```js
 {
     qos    : <optional> - default 0,
@@ -94,21 +120,48 @@ Publish `payload` to `topic`, `callback` will be fired when the broker acknowled
 ```
 
 <br>
+
+
+The following event methods are used to attach callbacks to the events specified in the next section.
+
+**`client.bind(event, callback) ⇒ client`**
+
+Attaches `callback` to be called whenever `event` is triggered by the library. See Events below for possible events.
+
+**`client.on(event, callback) ⇒ client`**
+
+Synonym for `client.bind`.
+
+**`client.unbind(event, callback) ⇒ client`**
+
+De-register `callback` from being called when `event` is triggered. Previously registered callbacks must be named values for this to work, otherwise the method will fail silently.
+
+<br>
+
+###### Events:
+
 The client emits the following events
 
-- `'connect'`: client has connected to broker
+- `'connecting'`: client has started connecting to a broker
+- `'connect'`: client has successfully connected to broker
 - `'disconnect'`: client was disconnected from broker for whatever reason
+- `'offline'`: client is disconnected and no automatic reconnection attempts will be made
 - `'message'`: client received an MQTT message
 
-Callbacks can be attached to these events through `client.on` or `client.bind` and removed with `client.unbind`.
+
+As outlined above, callbacks can be attached to these events through `client.on` or `client.bind` and removed with `client.unbind`.
 
 ```js
-client.on('connect', function() { console.log("hooraah, I'm connected"); });
-client.on('disconnect', function() { console.log('oh noes!'); });
-client.on('message', console.log.bind(console));
+client
+  .on('connecting', function() { console.log('connecting...'); })
+  .on('connect', function() { console.log("hooraah, I'm connected"); })
+  .on('disconnect', function() { console.log('oh noes!'); })
+  .on('offline', function() { console.log('stopped trying, call connect manually'); });
+
+client.on('message', console.log.bind(console, 'MQTT message arrived: '));
 ```
 
-The callback attached to the `message` event will have the following parameters
+The callback attached to the `message` event has the following signature
 
 ```js
 client.on('message', function handleMessage(topic, payload, details) {
@@ -133,8 +186,18 @@ The meaning of the fields are explained in the [Paho documentation](http://www.e
 
 
 <br>
-Roadmap & Changelog
--------------------
+
+### Colophon
+
+The event emitter pattern that `web-mqtt-client` uses is based on [microevent.js](https://github.com/jeromeetienne/microevent.js).
+
+### License
+
+`web-mqtt-client` is ISC licensed.
+
+<br>
+
+### Roadmap & Changelog
 
 **1.2.0**
 
@@ -143,9 +206,9 @@ Roadmap & Changelog
 
 **1.1.0**
 
-- [ ] reconnection callback
-- [ ] extended connection lifecycle callbacks
-- ~~[ ] optional logging support~~ dropped, since it's currently easy to attach logging to callbacks if needed
+- [x] automatic reconnection interval
+- [x] extended connection lifecycle callbacks
+- [ ] ~~optional logging support~~ dropped, since it's currently easy to attach logging to callbacks if needed
 - [x] integration tests against Mosca
 
 **1.0.1**
@@ -176,6 +239,7 @@ Roadmap & Changelog
 
 **Future**
 
+- [ ] reconnection callback
 - [ ] better example in README
 - [ ] rewrite Paho Errors
 - [ ] proper linting config
@@ -187,8 +251,8 @@ Roadmap & Changelog
 - [ ] provide sourcemaps
 
 <br>
-Notes
------
+
+### Notes
 
 - Paho documentation http://www.eclipse.org/paho/files/jsdoc/index.html
 - promise support for methods? or example for wrapping
