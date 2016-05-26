@@ -138,6 +138,14 @@ De-register `callback` from being called when `event` is triggered. Previously r
 
 <br>
 
+###### Utils:
+
+**`client.convertTopic(topic) ⇒ RegEx`**
+
+Converts string `topic` to a matching regular expression that supports the MQTT topic wildcards (`#` and `+`), used internally. The implementation is not bullet-proof, see tests and verify that the functionality matches your use-case.
+
+<br>
+
 ###### Events:
 
 The client emits the following events
@@ -184,7 +192,6 @@ client.on('message', function handleMessage(topic, payload, details) {
 
 The meaning of the fields are explained in the [Paho documentation](http://www.eclipse.org/paho/files/jsdoc/symbols/Paho.MQTT.Message.html).
 
-
 <br>
 
 ### Colophon
@@ -202,7 +209,7 @@ The event emitter pattern that `web-mqtt-client` uses is based on [microevent.js
 **1.2.0**
 
 - [ ] separate messages event API
-- [ ] MQTT topic regex support
+- [x] MQTT topic regex support
 
 **1.1.0**
 
@@ -239,7 +246,7 @@ The event emitter pattern that `web-mqtt-client` uses is based on [microevent.js
 
 **Future**
 
-- [ ] reconnection callback
+- [ ] ~~reconnection callback~~ abandoned, can easily be implemented with attaching a function that calls `client.connect()` to the `offline` event
 - [ ] better example in README
 - [ ] rewrite Paho Errors
 - [ ] proper linting config

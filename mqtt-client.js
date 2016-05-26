@@ -66,6 +66,11 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     return self;
   };
 
+
+  self.convertTopic = function(topic) {
+    return new RegExp('^' + topic.replace(/\+/g, '[^\/]+').replace(/#/g, '.+') + '$');
+  };
+
   self.client = new Paho.MQTT.Client(self.broker.host, self.broker.port, self.broker.clientId);
   self.client.onConnectionLost = self.emitter.trigger.bind(self, 'disconnect');
   self.messageCache = [];
