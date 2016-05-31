@@ -71,6 +71,34 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     return new RegExp('^' + topic.replace(/\+/g, '[^\/]+').replace(/#/g, '.+') + '$');
   };
 
+  self.messages = {
+    func    : [],
+    bind    : function(topic, qos, callback) {
+                if (arguments.length === 2 && typeof qos === 'function')
+                  callback = qos;
+                callback.topic = topic;
+                callback.re = self.convertTopic(topic);
+                callback.qos = Number(qos) ? qos : 0;
+                self.messages.func.push(callback);
+              },
+    unbind  : function(callback) {
+                var index = self.messages.func.indexOf(callback);
+                if (index > -1) {
+                  self.messages.func.splice(index, 1);
+                }
+              },
+    trigger : function(topic) {
+                var args = slice.call(arguments, 1);
+                self.messages.func.forEach(function(fn) {
+                  if (fn.re.test(topic)) {
+                    fn.apply(self, args);
+                  }
+                });
+              },
+  };
+  self.messages.on = self.messages.bind;
+  self.on('message', self.messages.trigger);
+
   self.client = new Paho.MQTT.Client(self.broker.host, self.broker.port, self.broker.clientId);
   self.client.onConnectionLost = self.emitter.trigger.bind(self, 'disconnect');
   self.messageCache = [];

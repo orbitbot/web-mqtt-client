@@ -136,6 +136,10 @@ Synonym for `client.bind`.
 
 De-register `callback` from being called when `event` is triggered. Previously registered callbacks must be named values for this to work, otherwise the method will fail silently.
 
+**`client.once(event, callback) ⇒ client`**
+
+Just like `bind`/`on`, but is automatically de-registered after being called.
+
 <br>
 
 ###### Utils:
