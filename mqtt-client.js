@@ -78,14 +78,18 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
                   callback = qos;
                 callback.topic = topic;
                 callback.re = self.convertTopic(topic);
-                callback.qos = Number(qos) ? qos : 0;
+                callback.qos = Number(qos) || 0;
                 self.messages.func.push(callback);
+
+                return self;
               },
     unbind  : function(callback) {
                 var index = self.messages.func.indexOf(callback);
                 if (index > -1) {
                   self.messages.func.splice(index, 1);
                 }
+
+                return self;
               },
     trigger : function(topic) {
                 var args = slice.call(arguments, 1);

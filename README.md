@@ -142,6 +142,25 @@ Just like `bind`/`on`, but is automatically de-registered after being called.
 
 <br>
 
+##### Messages API
+
+The client has a utility API that compliments the `client.on('message', callback)` pattern.
+
+**`client.messages.bind(topic, callback) ⇒ client`**
+
+Attaches `callback` to be called whenever a message arrives that match the MQTT `topic`. The topic string supports both MQTT wildcard characters, so it can be used fairly flexibly, but verify that your usecase is covered with `client.convertTopic()`.
+
+**`client.messages.on(topic, callback) ⇒ client`**
+
+Synonym for `client.messages.bind`.
+
+**`client.messages.unbind(callback) ⇒ client`**
+
+De-register `callback` from being called when incoming messages that matches its `topic` arrive. Previously registered callbacks must be named values for this to work, otherwise the method will fail silently.
+
+
+<br>
+
 ###### Utils:
 
 **`client.convertTopic(topic) ⇒ RegEx`**

@@ -31,11 +31,10 @@ App.connect = function(args) {
     .connect();
 
   // expose functionality and data to views
-  App.host     = App.client.broker.host;
-  App.clientId = App.client.broker.clientId;
-
-  App.disconnect  = App.client.disconnect;
-  App.subscribe = function(param) {
+  App.host       = App.client.broker.host;
+  App.clientId   = App.client.broker.clientId;
+  App.disconnect = App.client.disconnect;
+  App.subscribe  = function(param) {
     App.client.subscribe(param.topic, param.qos, function(error, granted) {
       if (error) {
         console.error('Error subscribing to ' + param.topic, error);
