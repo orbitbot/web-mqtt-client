@@ -229,9 +229,14 @@ The event emitter pattern that `web-mqtt-client` uses is based on [microevent.js
 
 ### Roadmap & Changelog
 
+**1.3.0**
+
+- [ ] Messages API automatically subscribe and unsubscribes from topics
+- [ ] filter subscription/unsubscription calls to broker if topic has other callbacks
+
 **1.2.0**
 
-- [ ] separate messages event API
+- [x] separate messages event API
 - [x] MQTT topic regex support
 
 **1.1.0**
@@ -274,7 +279,6 @@ The event emitter pattern that `web-mqtt-client` uses is based on [microevent.js
 - [ ] rewrite Paho Errors
 - [ ] proper linting config
 - [ ] test coverage x
-- [ ] filter subscription/unsubscription calls to broker if topic has other callbacks
 - [ ] filter sub/unsub is QoS-aware
 - [ ] automatic resubscription of topics on reconnect
 - [ ] optimize compression
