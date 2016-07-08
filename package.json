@@ -1,6 +1,6 @@
 {
   "name": "web-mqtt-client",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A better MQTT API for the browser",
   "main": "mqtt-client.js",
   "files": [

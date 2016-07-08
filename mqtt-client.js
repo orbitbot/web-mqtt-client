@@ -5,7 +5,7 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     var message = new Paho.MQTT.Message(payload);
     message.destinationName = topic;
     message.qos             = Number(qos) || 0;
-    message.retain          = !!retain;
+    message.retained        = !!retain;
 
     return message;
   };

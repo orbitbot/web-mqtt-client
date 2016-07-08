@@ -231,8 +231,12 @@ The event emitter pattern that `web-mqtt-client` uses is based on [microevent.js
 
 **1.3.0**
 
-- [ ] Messages API automatically subscribe and unsubscribes from topics
+- [ ] Messages API automatically subscribes and unsubscribes from topics
 - [ ] filter subscription/unsubscription calls to broker if topic has other callbacks
+
+**1.2.1**
+
+- [x] fix for #2 Cannot send retained messages using MqttClient's publish method
 
 **1.2.0**
 
