@@ -73,20 +73,32 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
 
   self.messages = {
     func    : [],
-    bind    : function(topic, qos, callback) {
-                if (arguments.length === 2 && typeof qos === 'function')
+    count   : function(topic) {
+                return self.messages.func.reduce(function(n, elem) { return n + (elem.topic === topic) }, 0);
+              },
+    bind    : function(topic, qos, callback, force) {
+                if (arguments.length === 2 && typeof qos === 'function') {
                   callback = qos;
+                  force = callback
+                }
                 callback.topic = topic;
                 callback.re = self.convertTopic(topic);
                 callback.qos = Number(qos) || 0;
                 self.messages.func.push(callback);
 
+                if (force === true || self.messages.count(topic) === 1) {
+                  self.subscribe(topic, qos);
+                }
+
                 return self;
               },
-    unbind  : function(callback) {
+    unbind  : function(callback, force) {
                 var index = self.messages.func.indexOf(callback);
                 if (index > -1) {
                   self.messages.func.splice(index, 1);
+                  if (force === true || self.messages.count(callback.topic) < 1) {
+                    self.unsubscribe(callback.topic);
+                  }
                 }
 
                 return self;
@@ -107,8 +119,9 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
   self.client.onConnectionLost = self.emitter.trigger.bind(self, 'disconnect');
   self.messageCache = [];
   self.client.onMessageDelivered = function(msg) {
-    if (self.messageCache.indexOf(msg) >= 0)
+    if (self.messageCache.indexOf(msg) >= 0) {
       self.messageCache.splice(self.messageCache.indexOf(msg))[0].callback();
+    }
   };
   self.client.onMessageArrived = function(msg) {
     self.emitter.trigger('message', msg.destinationName, msg.payloadString || msg.payloadBytes, {

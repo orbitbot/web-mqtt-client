@@ -156,7 +156,7 @@ Synonym for `client.messages.bind`.
 
 **`client.messages.unbind(callback) ⇒ client`**
 
-De-register `callback` from being called when incoming messages that matches its `topic` arrive. Previously registered callbacks must be named values for this to work, otherwise the method will fail silently.
+De-register `callback` from being called when incoming messages that matches its `topic` arrive. Previously registered callbacks must be named values for this to work, otherwise the method will fail silently. For correct functionality, it's also important that the `topic` property added to `callback` in subscribe is not modified elsewhere in code.
 
 
 <br>
@@ -231,8 +231,9 @@ The event emitter pattern that `web-mqtt-client` uses is based on [microevent.js
 
 **1.3.0**
 
-- [ ] Messages API automatically subscribes and unsubscribes from topics
-- [ ] filter subscription/unsubscription calls to broker if topic has other callbacks
+- [x] Messages API automatically subscribes and unsubscribes from topics
+- [x] filter subscription/unsubscription calls to broker if topic has other callbacks
+- [x] can manually force subscribe or unsubscribe calls using Messages API
 
 **1.2.1**
 
@@ -284,7 +285,7 @@ The event emitter pattern that `web-mqtt-client` uses is based on [microevent.js
 - [ ] proper linting config
 - [ ] test coverage x
 - [ ] filter sub/unsub is QoS-aware
-- [ ] automatic resubscription of topics on reconnect
+- [ ] ~~automatic resubscription of topics on reconnect~~
 - [ ] optimize compression
 - [ ] provide sourcemaps
 
