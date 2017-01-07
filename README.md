@@ -146,17 +146,17 @@ Just like `bind`/`on`, but is automatically de-registered after being called.
 
 The client has a utility API that compliments the `client.on('message', callback)` pattern.
 
-**`client.messages.bind(topic, callback) ⇒ client`**
+**`client.messages.bind(topic, qos, callback, force) ⇒ client`**
 
-Attaches `callback` to be called whenever a message arrives that match the MQTT `topic`. The topic string supports both MQTT wildcard characters, so it can be used fairly flexibly, but verify that your usecase is covered with `client.convertTopic()`.
+Attaches `callback` to be called whenever a message arrives that match the MQTT `topic`. The topic string supports both MQTT wildcard characters, so it can be used fairly flexibly, but verify that your usecase is covered with `client.convertTopic()`. `qos` and `force` parameters are optional, if not supplied `qos` is 0. By default, a MQTT subscribe signal is not sent to the broker if there is already a callback registered with the Messages API that has the same exact string (not one that might match wildcards), `force` can be used to cirumvent this behavior f.e. when `qos` should change or similar.
 
-**`client.messages.on(topic, callback) ⇒ client`**
+**`client.messages.on(topic, qos, callback, force) ⇒ client`**
 
 Synonym for `client.messages.bind`.
 
 **`client.messages.unbind(callback) ⇒ client`**
 
-De-register `callback` from being called when incoming messages that matches its `topic` arrive. Previously registered callbacks must be named values for this to work, otherwise the method will fail silently. For correct functionality, it's also important that the `topic` property added to `callback` in subscribe is not modified elsewhere in code.
+De-register `callback` from being called when incoming messages that matches its `topic` arrive. Previously registered callbacks must be named values for this to work, otherwise the method will fail silently. For correct functionality, it's also important that the `topic` property added to `callback` in subscribe is not modified elsewhere in code (it should match the string passed when the callback was attached).
 
 
 <br>
@@ -284,7 +284,7 @@ The event emitter pattern that `web-mqtt-client` uses is based on [microevent.js
 - [ ] rewrite Paho Errors
 - [ ] proper linting config
 - [ ] test coverage x
-- [ ] filter sub/unsub is QoS-aware
+- [ ] ~~filter sub/unsub is QoS-aware~~
 - [ ] ~~automatic resubscription of topics on reconnect~~
 - [ ] optimize compression
 - [ ] provide sourcemaps
