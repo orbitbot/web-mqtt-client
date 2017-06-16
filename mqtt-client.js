@@ -124,24 +124,19 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     }
   };
   self.client.onMessageArrived = function(msg) {
-    //msg.payloadString can throw an error
+    var payloadString
     try {
-      self.emitter.trigger('message', msg.destinationName, msg.payloadString, {
-        topic     : msg.destinationName,
-        qos       : msg.qos,
-        retained  : msg.retained,
-        payload   : msg.payloadBytes,
-        duplicate : msg.duplicate,
-      });
+      payloadString = msg.payloadString
     } catch(err) {
-      self.emitter.trigger('message', msg.destinationName, null, {
-        topic     : msg.destinationName,
-        qos       : msg.qos,
-        retained  : msg.retained,
-        payload   : msg.payloadBytes,
-        duplicate : msg.duplicate,
-      });
+        // could not parse payloadString
     }
+    self.emitter.trigger('message', msg.destinationName, payloadString, {
+      topic     : msg.destinationName,
+      qos       : msg.qos,
+      retained  : msg.retained,
+      payload   : msg.payloadBytes,
+      duplicate : msg.duplicate,
+    });
   };
 
   function onDisconnect() {
