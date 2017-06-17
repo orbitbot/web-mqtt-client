@@ -231,6 +231,10 @@ The event emitter pattern that `web-mqtt-client` uses is based on [microevent.js
 
 ### Roadmap & Changelog
 
+**1.3.1**
+
+- [x] fix for #3, throwing errors when trying to parse some string messages
+
 **1.3.0**
 
 - [x] Messages API automatically subscribes and unsubscribes from topics
