@@ -128,9 +128,9 @@ var MqttClient = function(args) { // eslint-disable-line no-unused-vars
     try {
       payloadString = msg.payloadString
     } catch(err) {
-        // could not parse payloadString
+      // could not parse payloadString
     }
-    self.emitter.trigger('message', msg.destinationName, payloadString, {
+    self.emitter.trigger('message', msg.destinationName, payloadString || msg.payloadBytes, {
       topic     : msg.destinationName,
       qos       : msg.qos,
       retained  : msg.retained,

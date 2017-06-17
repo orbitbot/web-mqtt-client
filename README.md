@@ -6,6 +6,7 @@
 An example of this library in use is available on [`gh-pages`](https://orbitbot.github.io/web-mqtt-client), source code and resources for the example under the `demo/` folder.
 
 <br>
+
 ### Installation
 
 ```sh
@@ -23,6 +24,7 @@ In addition to `mqtt-client.js`, you will also need to add `mqttws31.js` from [E
 `mqtt-client.js` expects the globals from Eclipse Paho to be available when initialized, so the order of evaluation matters. When the scripts have been evaluated, `web-mqtt-client` is available through the `MqttClient` global.
 
 <br>
+
 ### Usage
 
 An MQTT client is intialized with the call to `new MqttClient` with a configuration object. The configuration object is required to contain `host` and `port`, but accepts multiple other values:
@@ -109,13 +111,13 @@ The callback function gets a single error parameter if something went wrong, con
 
 **`client.publish(topic, payload, options, callback) ⇒ undefined`**
 
-Publish `payload` to `topic`, `callback` will be fired when the broker acknowledges the request. **NB.** if qos is 0 and a callback is provieded functionality is identical to the `subscribe` callback. The callback getting triggered may also be broker-dependant, so verify the functionality before depending on a callback being fired.
+Publish `payload` to `topic`, `callback` will be fired when the broker acknowledges the request. **NB.** if qos is 0 and a callback is provided functionality is identical to the `subscribe` callback. The callback getting triggered may also be broker-dependant, so verify the functionality before depending on a callback being fired.
 
 `options` are optional and can specify the following:
 ```js
 {
     qos    : <optional> - default 0,
-    retain : <optional> - deafult false,
+    retain : <optional> - default false,
 }
 ```
 
@@ -134,7 +136,7 @@ Synonym for `client.bind`.
 
 **`client.unbind(event, callback) ⇒ client`**
 
-De-register `callback` from being called when `event` is triggered. Previously registered callbacks must be named values for this to work, otherwise the method will fail silently.
+De-register `callback` from being called when `event` is triggered. Previously registered callbacks must be named variables for this to work, otherwise the method will fail silently.
 
 **`client.once(event, callback) ⇒ client`**
 
@@ -148,7 +150,7 @@ The client has a utility API that compliments the `client.on('message', callback
 
 **`client.messages.bind(topic, qos, callback, force) ⇒ client`**
 
-Attaches `callback` to be called whenever a message arrives that match the MQTT `topic`. The topic string supports both MQTT wildcard characters, so it can be used fairly flexibly, but verify that your usecase is covered with `client.convertTopic()`. `qos` and `force` parameters are optional, if not supplied `qos` is 0. By default, a MQTT subscribe signal is not sent to the broker if there is already a callback registered with the Messages API that has the same exact string (not one that might match wildcards), `force` can be used to cirumvent this behavior f.e. when `qos` should change or similar.
+Attaches `callback` to be called whenever a message arrives that match the MQTT `topic`. The topic string supports both MQTT wildcard characters, so it can be used fairly flexibly, but verify that your usecase is covered with `client.convertTopic()`. `qos` and `force` parameters are optional, if not supplied `qos` is 0. By default, a MQTT subscribe signal is not sent to the broker if there is already a callback registered with the Messages API that has the same exact string as its topic (wildcard matching is not attempted), `force` can be used to cirumvent this behavior f.e. when `qos` should change or similar.
 
 **`client.messages.on(topic, qos, callback, force) ⇒ client`**
 
@@ -156,7 +158,7 @@ Synonym for `client.messages.bind`.
 
 **`client.messages.unbind(callback) ⇒ client`**
 
-De-register `callback` from being called when incoming messages that matches its `topic` arrive. Previously registered callbacks must be named values for this to work, otherwise the method will fail silently. For correct functionality, it's also important that the `topic` property added to `callback` in subscribe is not modified elsewhere in code (it should match the string passed when the callback was attached).
+De-register `callback` from being called when incoming messages that matches its `topic` arrive. Previously registered callbacks must be named variables for this to work, otherwise the method will fail silently. For correct functionality, it's also important that the `topic` property added to `callback` in subscribe is not modified elsewhere in code (it should match the string passed when the callback was attached).
 
 
 <br>
@@ -185,9 +187,9 @@ As outlined above, callbacks can be attached to these events through `client.on`
 ```js
 client
   .on('connecting', function() { console.log('connecting...'); })
-  .on('connect', function() { console.log("hooraah, I'm connected"); })
+  .on('connect',    function() { console.log("hooraah, I'm connected"); })
   .on('disconnect', function() { console.log('oh noes!'); })
-  .on('offline', function() { console.log('stopped trying, call connect manually'); });
+  .on('offline',    function() { console.log('stopped trying, call connect manually'); });
 
 client.on('message', console.log.bind(console, 'MQTT message arrived: '));
 ```
